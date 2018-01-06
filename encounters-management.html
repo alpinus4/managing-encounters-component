@@ -1,0 +1,160 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="encounters-management">
+
+  <template>
+
+    <style>
+      :host {
+        display: var(--encounters-management-display , inline-block);
+        font-size: var(--encounters-management-font-size , 20pt);
+        color: var(--encounters-management-font-color , rgb(24, 24, 24));
+        background-color: var(--encounters-management-background-color , inherit);
+        padding: var(--encounters-management-padding , 20px);
+      }
+
+      /*HEADER*/
+      :host .header {
+        font-size: var(--encounters-management-font-size-header , 36pt);
+        color: var(--encounters-management-font-color-header , rgb(62, 62, 62));
+        display: var(--encounters-management-display-header , inherit);
+      }
+
+
+      /*INDEX*/
+      :host .index {
+        font-size: var(--encounters-management-font-size-index , inherit);
+        color: var(--encounters-management-font-color-index , inherit);
+        display: var(--encounters-management-display-index , inherit);
+      }
+
+
+      /*TYPE*/
+      :host .type {
+        font-size: var(--encounters-management-font-size-type , inherit);
+        color: var(--encounters-management-font-color-type , inherit);
+        display: var(--encounters-management-display-type , inherit);
+      }
+
+
+      /*LOCATION*/
+      :host .location {
+        font-size: var(--encounters-management-font-size-location , inherit);
+        color: var(--encounters-management-font-color-location , inherit);
+        display: var(--encounters-management-display-location , inherit);
+      }
+
+
+      /*DATETIME*/
+      :host .datetime {
+        font-size: var(--encounters-management-font-size-datetime , 15pt);
+        color: var(--encounters-management-font-color-datetime , rgb(88, 88, 88));
+        display: var(--encounters-management-display-datetime , inherit);
+      }
+
+    </style>
+
+      <div class="header">Encounters</div></br>
+      <template is="dom-repeat" items="[[encounters]]">
+        <p>
+          <span class="index">{{displayIndex(index)}}.</span>
+          <span class="type">{{item.encounterType.display}} </br></span>
+          <span class="location">{{item.location.display}} </br></span>
+          <span class="datetime">{{item.encounterDatetime}} </br></span>
+        </p>
+      </template>
+
+
+
+    <iron-ajax
+    url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+    params='{{sqObj}}'
+    content-type="application/json"
+    handle-as="json"
+    with-credentials="true"
+    on-response="handleResponse"
+    method="GET"
+    on-error="_error"
+    id="iron_ajax"></iron-ajax>
+
+  </template>
+
+  <script>
+    class EncountersManagement extends Polymer.Element {
+      static get is() {
+          return 'encounters-management';
+      }
+      static get properties() {
+        return {
+          encounters: {
+            type: Array
+          },
+          sq:{
+            type: String,
+            observer: "_changedSQ"
+          },
+          sqObj:{
+            type:Object
+          }
+        }
+      }
+
+      constructor() {
+        super();
+      }
+
+      _changedSQ(){
+        this.sqObj = {
+          q: this.sq,
+          v: "full"
+        }
+        this.$.iron_ajax.generateRequest();
+      }
+
+      handleResponse(data){
+        var encounters = data.detail.response.results;
+        //encounters = filterVisitsEncounters(this.encounters, this.patientuuid);
+
+        //parse dates and correct encounter type
+        for (var i = 0; i < encounters.length; i++) {
+          encounters[i].encounterDatetime = parseDate(encounters[i].encounterDatetime);
+          encounters[i].encounterType.display = encounters[i].encounterType.display.toLowerCase();
+          encounters[i].encounterType.display = capitalizeFirstLetter(encounters[i].encounterType.display);
+        }
+
+        this.encounters = encounters;
+      }
+
+      displayIndex(index){
+        return index + 1;
+      }
+
+    }
+    customElements.define(EncountersManagement.is, EncountersManagement);
+  </script>
+
+  <script>
+    function parseDate(givenDate){
+      var date = new Date(givenDate);
+
+      //part of code from https://stackoverflow.com/questions/3605214/javascript-add-leading-zeroes-to-date with added hours and minutes
+      var myDateString;
+      date.setDate(date.getDate()+0);
+      myDateString = ('0' + date.getDate()).slice(-2) + '/'
+           + ('0' + (date.getMonth()+1)).slice(-2) + '/'
+           + date.getFullYear() + '  '
+           + ('0' + (date.getHours()-1)).slice(-2) + ':'
+           + ('0' + date.getMinutes()).slice(-2);
+
+      return myDateString;
+    }
+
+    //part of code from https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+  </script>
+
+</dom-module>
