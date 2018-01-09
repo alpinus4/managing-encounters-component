@@ -4,9 +4,14 @@
 <dom-module id="encounters-management">
 
   <template>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <style>
       :host {
+        width: 100%;
+        height: 100%;
         display: var(--encounters-management-display , inline-block);
         font-size: var(--encounters-management-font-size , 20pt);
         color: var(--encounters-management-font-color , rgb(24, 24, 24));
@@ -18,7 +23,7 @@
       :host .header {
         font-size: var(--encounters-management-font-size-header , 36pt);
         color: var(--encounters-management-font-color-header , rgb(62, 62, 62));
-        display: var(--encounters-management-display-header , inherit);
+        margin-left: 5%;
       }
 
 
@@ -26,7 +31,6 @@
       :host .index {
         font-size: var(--encounters-management-font-size-index , inherit);
         color: var(--encounters-management-font-color-index , inherit);
-        display: var(--encounters-management-display-index , inherit);
       }
 
 
@@ -34,7 +38,6 @@
       :host .type {
         font-size: var(--encounters-management-font-size-type , inherit);
         color: var(--encounters-management-font-color-type , inherit);
-        display: var(--encounters-management-display-type , inherit);
       }
 
 
@@ -42,92 +45,586 @@
       :host .location {
         font-size: var(--encounters-management-font-size-location , inherit);
         color: var(--encounters-management-font-color-location , inherit);
-        display: var(--encounters-management-display-location , inherit);
       }
 
 
       /*DATETIME*/
       :host .datetime {
-        font-size: var(--encounters-management-font-size-datetime , 15pt);
-        color: var(--encounters-management-font-color-datetime , rgb(88, 88, 88));
-        display: var(--encounters-management-display-datetime , inherit);
+        font-size: var(--encounters-management-font-size-datetime , inherit);
+        color: var(--encounters-management-font-color-datetime , inherit);
       }
 
+      /* TABLE*/
+      :host .table-striped>tbody>tr:nth-child(odd)>td,
+            .table-striped>tbody>tr:nth-child(odd)>th {
+        background-color: rgb(255, 243, 228);
+      }
+
+      :host .white-table {
+        background-color: rgb(255, 255, 255);
+        box-shadow: 3px 10px 20px -3px rgba(97, 97, 97, 0.5);
+      }
+
+
+      /* SEARCH BAR*/
+      :host #searchBar {
+        border: none;
+        box-shadow: 3px 10px 20px -3px rgba(97, 97, 97, 0.5);
+        border-radius: 0;
+        background: rgb(255, 255, 255);
+        width: 40%;
+        float: left;
+      }
+
+      :host #searchBarInput{
+        min-height: 70px;
+        border: none;
+        box-shadow: none;
+        width: 90%;
+        float: left;
+      }
+
+      :host #searchBtn {
+        float: right;
+        width: 10%;
+        height: 70px;
+      }
+
+      :host .my-btn-default {
+        border: none;
+        border-radius: 0;
+        min-height: 70px;
+        max-height: 70px;
+        box-shadow: 3px 10px 20px -3px rgba(97, 97, 97, 0.5);
+        vertical-align: middle;
+        line-height: 70px;
+        background: rgb(255, 255, 255);
+        margin-left: 2%;
+      }
+
+      :host .my-btn-default:active, .my-btn-default:focus, .my-btn-default:hover{
+        background: rgb(255, 255, 255);
+      }
+
+      :host #sortBtn {
+        width: auto;
+        margin-left: 5%;
+      }
+
+      :host #filtersBtn {
+        width: auto;
+        margin-left: 5%;
+      }
+
+      :host #resultsParams {
+        width: 50%;
+        float: left;
+      }
+
+      :host #actions, #pagination {
+        margin-top: 2%;
+        margin-bottom: 3%;
+      }
+
+      :host #actions {
+        float: left;
+        width: 70%;
+      }
+
+      :host #pagination {
+        float: right;
+        width: 20%;
+      }
+
+      :host .pageBtn {
+        width: 70px;
+        height: 70px;
+      }
+
+      /*not to display*/
+      :host .hidden {
+        display: none;
+      }
+
+      :host .transparentBtn {
+        border:none;
+        background-color:transparent;
+      }
+
+      /* loading spinner */
+
+      .loading-spinner {
+        border: 6px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 6px solid #141414;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(1080deg); }
+      }
+
+
+      /*MODAL From: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal - BOOTSTRAP NOT WORKING*/
+      .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgb(0,0,0);
+          background-color: rgba(0,0,0,0.4);
+          font-size: 16pt;
+      }
+
+      .modal-content {
+          background-color: #fefefe;
+          margin: auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+      }
+
+      .modal-content hr {
+          border-width: 2px;
+      }
+
+      .modal-content button{
+          font-size: 16pt;
+      }
+
+
+      .close-modal {
+          color: #aaaaaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+      }
+
+      .close-modal:hover,
+      .close-modal:focus {
+          color: #000;
+          text-decoration: none;
+          cursor: pointer;
+      }
     </style>
 
-      <div class="header">Encounters</div></br>
-      <template is="dom-repeat" items="[[encounters]]">
-        <p>
-          <span class="index">{{displayIndex(index)}}.</span>
-          <span class="type">{{item.encounterType.display}} </br></span>
-          <span class="location">{{item.location.display}} </br></span>
-          <span class="datetime">{{item.encounterDatetime}} </br></span>
-        </p>
-      </template>
+
+      <!-- CREATE ENCOUNTER MODAL-->
+      <div id="createEncounterModal" class="modal">
+
+        <div class="modal-content">
+          <span class="close-modal" on-click="CloseCreateModal">&times;</span>
+          <h2>Create new encounter</h2>
+          <hr></br>
+          Patient name: <input type="text" class="form-control input-lg" id="createEncDataName"></input></br>
+          Location: <input type="text" class="form-control input-lg" id="createEncDataLocation"></input></br>
+          Encounter Date: <input type="text" class="form-control input-lg" id="createEncDataDate"></input></br>
+          Encounter Type: <input type="text" class="form-control input-lg" id="createEncDataType"></input></br>
+          Form: <input type="text" class="form-control input-lg" id="createEncDataForm"></input></br>
+          Providers: <input type="text" class="form-control input-lg" id="createEncDataProviders"></input></br></br>
+          <button type='button' class="btn btn-default" id="createEncounerBtn" on-click="CreateEncounter">
+            Create
+          </button>
+        </div>
+      </div>
+
+      <!-- EDIT ENCOUNTER MODAL-->
+      <div id="editEncounterModal" class="modal">
+
+        <div class="modal-content">
+          <span class="close-modal" on-click="CloseEditModal">&times;</span>
+          <h2>Edit encounter</h2>
+          <hr></br>
+          Patient name: <input type="text" class="form-control input-lg" id="editEncDataName"></input></br>
+          Location: <input type="text" class="form-control input-lg" id="editEncDataLocation"></input></br>
+          Encounter Date: <input type="text" class="form-control input-lg" id="editEncDataDate"></input></br>
+          Encounter Type: <input type="text" class="form-control input-lg" id="editEncDataType"></input></br>
+          Form: <input type="text" class="form-control input-lg" id="editEncDataForm"></input></br>
+          Providers: <input type="text" class="form-control input-lg" id="editEncDataProviders"></input></br></br>
+          <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="CreateEncounter">
+            Save changes
+          </button>
+        </div>
+      </div>
+
+
+      <div class="header">Encounters</div></br></br>
+      <form id="searchForm" action="javascript:void(0);">
+          <div id="searchBar">
+            <input type="button" on-click="NewSearchQuery" id="changesq" name="changesq" class="hidden">
+            <input type="text" class="form-control input-lg" id="searchBarInput" name="searchBarInput">
+            <button type='submit' class="transparentBtn" id="searchBtn">
+              <img src="./images/ic_search_black_48dp_2x.png" width="70px" height="70px">
+            </button>
+          </div>
+      </form>
+      <span class="glyphicons glyphicons-filter"></span>
+      <div id="resultsParams">
+          <button class="btn-default my-btn-default" id="sortBtn" on-click="Sort">
+            <img src="./images/ic_sort_black_48dp_2x.png" width="70px" height="70px"> Sort
+            <img src="./images/ic_arrow_drop_down_black_48dp_2x.png" width="20px" height="20px">
+          </button>
+          <button class="btn-default my-btn-default" id="filtersBtn" on-click="Filters">
+            <img src="./images/ic_filter_list_black_48dp_2x.png" width="70px" height="70px"> Filters
+            <img src="./images/ic_arrow_drop_down_black_48dp_2x.png" width="20px" height="20px">
+          </button>
+      </div>
+      <div id="actions">
+        <button class="btn-default my-btn-default" on-click="OpenCreateModal">
+          <img src="./images/ic_add_black_48dp_2x.png" width="30px" height="30px">  Create
+        </button>
+        <button class="btn-default my-btn-default" on-click="Import">
+            <img src="./images/ic_file_upload_black_48dp_2x.png" width="30px" height="30px"> Import
+        </button>
+      </div>
+      <div id="pagination">
+        <span id="pageCount">1/5</span>
+        <button class="btn-default pageBtn my-btn-default" on-click="PreviousPage">
+            <img src="./images/ic_chevron_left_black_48dp_2x.png" width="30px" height="30px">
+        </button>
+        <button class="btn-default pageBtn my-btn-default" on-click="NextPage">
+            <img src="./images/ic_chevron_right_black_48dp_2x.png" width="30px" height="30px">
+        </button>
+      </div>
+      <table class="table table-striped white-table">
+        <thead>
+          <tr>
+            <th><img src="./images/ic_settings_black_48dp_2x.png" width="30px" height="30px"></th>
+            <th>Patient name</th>
+            <th>Encounter type</th>
+            <th>Form</th>
+            <th>Provider</th>
+            <th>Location</th>
+            <th>Encounter date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template is="dom-repeat" items="[[encountersToDisplay]]">
+            <tr>
+              <td>
+                <button class="btn btn-default" on-click="OpenEditModal" value="{{item.uuid}}">
+                  <img src="./images/ic_edit_black_48dp_2x.png" width="20px" height="20px">
+                </button>
+                <button class="btn btn-danger" on-click="OpenEditModal" value="{{item.uuid}}">
+                  <img src="./images/ic_delete_forever_white_48dp_2x.png" width="20px" height="20px">
+                </button>
+              </td>
+              <td class="patient-name">{{item.patient.display}}</td>
+              <td class="type">{{item.encounterType.display}}</td>
+              <td class="location">{{item.form.display}}</td>
+              <td class="datetime">{{item.encounterProviders.0.provider.display}}</td>
+              <td class="patient-name">{{item.location.display}}</td>
+              <td class="patient-name">{{item.encounterDatetime}}</td>
+            </tr>
+          </template>
+
+          <template is="dom-if" if="{{notFound}}">
+            <tr>
+              <td colspan="7" align="center"></br>Not found any matching encounters.</td>
+            </tr>
+          </template>
+
+          <template is="dom-if" if="{{loading}}">
+            <tr>
+            </br>
+              <td colspan="7" align="center"><div class="loading-spinner"></div></td>
+            </tr>
+          </template>
+
+      </tbody>
+    </table>
 
 
 
-    <iron-ajax
-    url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
-    params='{{sqObj}}'
-    content-type="application/json"
-    handle-as="json"
-    with-credentials="true"
-    on-response="handleResponse"
-    method="GET"
-    on-error="_error"
-    id="iron_ajax"></iron-ajax>
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  params='{{searchQueryObj}}'
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetAll"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_all"></iron-ajax>
+
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  params='{{newEncounterObj}}'
+  content-type="application/json"
+  with-credentials="true"
+  on-response="handleResponseCreateNew"
+  method="POST"
+  on-error="_error"
+  id="iron_ajax_create"></iron-ajax>
+
+  <iron-ajax url="{{deleteEditURL}}"
+  with-credentials="true"
+  content-type="application/json"
+  method="DELETE"
+  on-error="_error"
+  id="iron_ajax_delete"></iron-ajax>
+
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  params='{{sqObj}}'
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponse"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_edit"></iron-ajax>
 
   </template>
 
   <script>
     class EncountersManagement extends Polymer.Element {
       static get is() {
-          return 'encounters-management';
+        return 'encounters-management';
       }
       static get properties() {
         return {
           encounters: {
-            type: Array
+            type: Array,
+            notice: true
           },
-          sq:{
+          encountersToDisplay: {
+            type: Array,
+            notice: true
+          },
+          searchQuery: {
             type: String,
-            observer: "_changedSQ"
+            observer: "_changedSearchQuery",
+            notice: true
           },
-          sqObj:{
-            type:Object
+          searchQueryObj: {
+            type: Object
+          },
+          newEncounterObj: {
+            type: Object
+          },
+          notFound: {
+            type: Boolean
+          },
+          loading: {
+            type: Boolean
+          },
+          pageNmb: {
+            type: Number
+          },
+          numberRecordsPerPage: {
+            type: Number
+          },
+          deleteEditURL: {
+            type: String
           }
         }
       }
 
       constructor() {
         super();
+        this.numberRecordsPerPage = 8;
       }
 
-      _changedSQ(){
-        this.sqObj = {
-          q: this.sq,
+      ready() {
+        super.ready();
+
+        //SEARCH
+        this.$.searchForm.addEventListener('submit', function (evt) {
+          this.changesq.click();
+        });
+      }
+
+      //SEARCH
+      _changedSearchQuery() {
+        this.searchQueryObj = {
+          q: this.searchQuery,
           v: "full"
         }
-        this.$.iron_ajax.generateRequest();
+        this.$.iron_ajax_get_all.generateRequest();
+        this.loading = true;
+        this.encounters = [];
+        this.notFound = false;
       }
 
-      handleResponse(data){
-        var encounters = data.detail.response.results;
-        //encounters = filterVisitsEncounters(this.encounters, this.patientuuid);
 
-        //parse dates and correct encounter type
-        for (var i = 0; i < encounters.length; i++) {
-          encounters[i].encounterDatetime = parseDate(encounters[i].encounterDatetime);
-          encounters[i].encounterType.display = encounters[i].encounterType.display.toLowerCase();
-          encounters[i].encounterType.display = capitalizeFirstLetter(encounters[i].encounterType.display);
+      NewSearchQuery(e){
+        this.searchQuery = this.$.searchBarInput.value;
+      }
+
+      handleResponseGetAll(data) {
+        this.pageNmb = 0;
+        var encounters = data.detail.response.results;
+
+        if(encounters.length == 0){
+
+          this.notFound = true;
+          this.encountersToDisplay = [];
+
+        }else {
+          //parse dates and correct data
+          for (var i = 0; i < encounters.length; i++) {
+            encounters[i].encounterDatetime = parseDate(encounters[i].encounterDatetime);
+            encounters[i].encounterType.display = encounters[i].encounterType.display.toLowerCase();
+            encounters[i].encounterType.display = capitalizeFirstLetter(encounters[i].encounterType.display);
+            encounters[i].patient.display = encounters[i].patient.display.replace(/[^a-zA-Z]+/g, ' '); //Get only name without id
+            encounters[i].encounterProviders[0].provider.display =
+            encounters[i].encounterProviders[0].provider.display.replace(/[^a-zA-Z]+/g, ' '); //Get only name without id
+          }
+
+          this.encountersToDisplay = this.PushPage(encounters);
         }
 
         this.encounters = encounters;
+        this.loading = false;
+
+        this.UpdatePagination();
       }
 
-      displayIndex(index){
-        return index + 1;
+      UpdatePagination(){
+        var pageNumber = this.pageNmb + 1;
+        this.$.pageCount.innerHTML = pageNumber + "/" + (Math.floor(this.encounters.length/this.numberRecordsPerPage) + 1);
+      }
+
+      OpenEditModal(e){
+        this.$.editEncounterModal.style.display = "block";
+
+        //Set values to edit
+        var encounterToEdit = this.GetMatchingEncounter(e.target.value);
+        this.$.editEncDataDate.value = encounterToEdit.encounterDatetime;
+        this.$.editEncDataName.value = encounterToEdit.patient.display;
+        this.$.editEncDataForm.value = encounterToEdit.form.display;
+        this.$.editEncDataType.value = encounterToEdit.encounterType.display;
+        this.$.editEncDataLocation.value = encounterToEdit.location.display;
+        this.$.editEncDataProviders.value = encounterToEdit.encounterProviders[0].provider.display;
+      }
+
+      CloseEditModal(){
+        this.$.editEncounterModal.style.display = "none";
+      }
+
+      GetMatchingEncounter(encounteruuid){
+        for (var i = 0; i < this.encountersToDisplay.length; i++) {
+          if(this.encountersToDisplay[i].uuid == encounteruuid){
+            return this.encountersToDisplay[i];
+          }
+        }
+      }
+
+      DeleteItem(e){
+        console.log(e.target.value);
+        this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" +e.target.value;
+        console.log(this.deleteEditURL);
+        console.log(this.$.iron_ajax_delete.url);
+        this.$.iron_ajax_delete.generateRequest();
+        this._changedSearchQuery();
+      }
+
+      PreviousPage(){
+        this.pageNmb--;
+        this.pageNmb = Math.max(0, Math.min(Math.floor(this.encounters.length/this.numberRecordsPerPage), this.pageNmb));//clamp
+        this.encountersToDisplay = this.PushPage(this.encounters);
+        this.UpdatePagination();
+      }
+
+      NextPage(){
+        this.pageNmb++;
+        this.pageNmb = Math.max(0, Math.min(Math.floor(this.encounters.length/this.numberRecordsPerPage), this.pageNmb));//clamp
+        this.encountersToDisplay = this.PushPage(this.encounters);
+        this.UpdatePagination();
+      }
+
+      Sort(){
+        console.log("sort");
+      }
+
+      Filters(){
+        console.log("filter");
+      }
+
+      OpenCreateModal(){
+        this.$.createEncounterModal.style.display = "block";
+      }
+
+      CloseCreateModal(){
+        this.$.createEncounterModal.style.display = "none";
+      }
+
+      CreateEncounter(){
+        this.newEncounterObj = {
+          "obs": "",
+          "encounterProviders": "Jackie Spann",
+          "form": "Basic Form",
+          "provider": "",
+          "patient": "Yennefer",
+          "location": "Unknown Location",
+          "orders": "",
+          "encounterDatetime": "01/01/2017",
+          "visit": null,
+          "encounterType": "ADULTINITIAL"
+        };
+        console.log(this.newEncounterObj);
+        console.log("Generate req");
+        this.$.iron_ajax_create.generateRequest();
+      }
+
+      handleResponseCreateNew(data){
+        console.log(data.detail.response);
+      }
+
+      Import(){
+        console.log("import");
+      }
+
+      PushPage(encounters){
+        var maxIndx = (this.pageNmb + 1) * (this.numberRecordsPerPage - 1);
+        if(this.pageNmb != 0){
+          var minIndx = this.pageNmb * (this.numberRecordsPerPage - 1) + 1;
+        } else {
+          var minIndx = 0;
+        }
+
+        console.log("max: "+maxIndx+" min: "+minIndx);
+
+        var encountersToReturn = [];
+
+        for(var i = minIndx; i < (maxIndx + 1) ; i++){
+          if(encounters[i]){
+            encountersToReturn.push(encounters[i]);
+          }
+        }
+        console.log(encountersToReturn);
+        return encountersToReturn;
+      }
+
+      _error(event){
+        console.log("Event:");
+        console.log(event);
+        console.log("");
+        console.log("Event Detail:");
+        console.log(event.detail);
+        console.log("");
+        console.log("Event Detail Error");
+        console.log(event.detail.error);
+        console.log("");
+        console.log("Error Message");
+        console.log(event.detail.error.message);
+        console.log("");
+        console.log("Request");
+        console.log(event.detail.request);
+        console.log("");
+        console.log("Response");
+        console.log(event.detail.response);
+        console.log("");
+        console.log("Request Response");
+        console.log(event.detail.request.response);
+        console.log("");
+        console.log("");
       }
 
     }
@@ -135,17 +632,17 @@
   </script>
 
   <script>
-    function parseDate(givenDate){
+    function parseDate(givenDate) {
       var date = new Date(givenDate);
 
       //part of code from https://stackoverflow.com/questions/3605214/javascript-add-leading-zeroes-to-date with added hours and minutes
       var myDateString;
-      date.setDate(date.getDate()+0);
-      myDateString = ('0' + date.getDate()).slice(-2) + '/'
-           + ('0' + (date.getMonth()+1)).slice(-2) + '/'
-           + date.getFullYear() + '  '
-           + ('0' + (date.getHours()-1)).slice(-2) + ':'
-           + ('0' + date.getMinutes()).slice(-2);
+      date.setDate(date.getDate() + 0);
+      myDateString = ('0' + date.getDate()).slice(-2) + '/' +
+        ('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+        date.getFullYear() + '  ' +
+        ('0' + (date.getHours() - 1)).slice(-2) + ':' +
+        ('0' + date.getMinutes()).slice(-2);
 
       return myDateString;
     }
