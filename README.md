@@ -9,7 +9,7 @@ Tested on Firefox 57.0.4 and Chrome 63.0.3239.132.
 ```
 git clone https://github.com/alpinus4/managing-encounters-component
 ```
-2. #### Download zip file.
+2. #### Run `polymer serve --open` command(you must have installed polymer) in project location
 
 
 ## How to use?
