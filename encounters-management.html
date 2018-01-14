@@ -277,32 +277,41 @@
           <span class="close-modal" on-click="CloseCreateModal">&times;</span>
           <h2>Create new encounter</h2>
           <hr></br>
-          <label for="createEncDataLocation">Location:</label>
-              <select class="form-control input-lg" id="createEncDataLocation">
+          Location: <select class="form-control input-lg" id="createEncDataLocation">
                 <template is="dom-repeat" items="[[availableLocations]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
           Encounter Date: <input type="text" class="form-control input-lg" id="createEncDataDate"></input></br>
-          <label for="createEncDataType">Encounter Type:</label>
-              <select class="form-control input-lg" id="createEncDataType">
+          Encounter Type: <select class="form-control input-lg" id="createEncDataType">
                 <template is="dom-repeat" items="[[availableTypes]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          <label for="createEncDataForm">Form:</label>
-              <select class="form-control input-lg" id="createEncDataForm">
+          Form: <select class="form-control input-lg" id="createEncDataForm">
                 <template is="dom-repeat" items="[[availableForms]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          Providers: <input type="text" class="form-control input-lg" id="createEncDataProviders"></input>
-          <label for="createEncDataRole">Provider role:</label>
-              <select class="form-control input-lg" id="createEncDataRole">
-                <template is="dom-repeat" items="[[availableEncounterRoles]]">
-                  <option value="{{item.uuid}}">{{item.name}}</option>
+
+              <button type='button' class="btn btn-default" on-click="IncreaseEncounterProvidersFormNumber">
+                Add encounter provider
+              </button></br>
+              <div id="createEncDataProviders">
+                <template is="dom-repeat" items="[[encounterProvidersFormNumber]]">
+                  Encounter provider [[index]]</br>
+                  Providers: <input type="text" class="form-control input-lg" id="provider[[index]]"></input>
+                  Provider role:<select class="form-control input-lg" id="role[[index]]">
+                        <template is="dom-repeat" items="[[availableEncounterRoles]]">
+                          <option value="{{item.uuid}}">{{item.name}}</option>
+                        </template>
+                      </select>
+                      <button type='button' class="btn btn-default" value="[[index]]" on-click="RemoveProvider_Create">
+                        <img src="./images/ic_delete_black_48dp_2x.png" width="30px" height="30px">
+                      </button>
+                    </br></br>
                 </template>
-              </select></br></br>
+              </div>
           <button type='button' class="btn btn-default" id="createEncounerBtn" on-click="CreateEncounterBtnClicked">
             Create
           </button>
@@ -316,32 +325,42 @@
           <span class="close-modal" on-click="CloseEditModal">&times;</span>
           <h2>Edit encounter</h2>
           <hr></br>
-          <label for="editEncDataLocation">Location:</label>
-              <select class="form-control input-lg" id="editEncDataLocation">
+          Location: <select class="form-control input-lg" id="editEncDataLocation">
                 <template is="dom-repeat" items="[[availableLocations]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
           Encounter Date: <input type="text" class="form-control input-lg" id="editEncDataDate"></input></br>
-          <label for="editEncDataType">Encounter Type:</label>
-              <select class="form-control input-lg" id="editEncDataType">
+          Encounter Type: <select class="form-control input-lg" id="editEncDataType">
                 <template is="dom-repeat" items="[[availableTypes]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          <label for="editEncDataForm">Form:</label>
-              <select class="form-control input-lg" id="editEncDataForm">
+          Form: <select class="form-control input-lg" id="editEncDataForm">
                 <template is="dom-repeat" items="[[availableForms]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          Providers: <input type="text" class="form-control input-lg" id="editEncDataProviders"></input>
-          <label for="editEncDataRole">Provider role:</label>
-              <select class="form-control input-lg" id="editEncDataRole">
-                <template is="dom-repeat" items="[[availableEncounterRoles]]">
-                  <option value="{{item.uuid}}">{{item.name}}</option>
+
+              <button type='button' class="btn btn-default" on-click="IncreaseEncounterProvidersFormNumber">
+                Add encounter provider
+              </button></br>
+              <div id="editEncDataProviders">
+                <template is="dom-repeat" items="[[encounterProvidersFormNumber]]">
+                  Encounter provider [[index]]</br>
+                  Providers: <input type="text" class="form-control input-lg" id="provider_edit[[index]]"></input>
+                  Provider role:<select class="form-control input-lg" id="role_edit[[index]]">
+                        <template is="dom-repeat" items="[[availableEncounterRoles]]">
+                          <option value="{{item.uuid}}">{{item.name}}</option>
+                        </template>
+                      </select>
+                  <button type='button' class="btn btn-default" value="[[index]]" on-click="RemoveProvider_Edit">
+                    <img src="./images/ic_delete_black_48dp_2x.png" width="30px" height="30px">
+                  </button>
+                    </br></br>
                 </template>
-              </select></br></br>
+              </div>
+
           <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="EditEncounterBtnClicked">
             Save changes
           </button>
@@ -400,7 +419,7 @@
         </template>
 
         <button class="btn-default my-btn-default drp-btn" id="refreshBtn" on-click="RefreshAll">
-          <img src="./images/ic_refresh_black_48dp_2x.png" width="70px" height="70px">
+          <img src="./images/ic_refresh_black_48dp_2x.png" width="50px" height="50px">
         </button>
 
       </div>
@@ -440,11 +459,11 @@
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
 
-            <th>Provider <button class="transparentBtn asc" value="location" on-click="ClickedSort">
+            <th>Provider <button class="transparentBtn asc" value="provider" on-click="ClickedSort">
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
 
-            <th>Location <button class="transparentBtn asc" value="provider" on-click="ClickedSort">
+            <th>Location <button class="transparentBtn asc" value="location" on-click="ClickedSort">
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
           </tr>
@@ -650,6 +669,16 @@
           },
           availableEncounterRoles: {
             type: Array
+          },
+          encounterProvidersFormNumber: {
+            type: Array,
+            notice: true
+          },
+          providerCallsToDo: {
+            type: Object
+          },
+          currentEncounterToEdit: {
+            type: Object
           }
         }
       }
@@ -667,22 +696,39 @@
           this.changesq.click();
         });
 
-        //MODAL HIDE IF CLICKED ON OTHER AREA THA MODAL
-        this.$.content.addEventListener('click', function(evt) {
-          if (!evt.target.matches('.btn-default') && !evt.target.matches('.modal-content') && !evt.target.matches('.form-control')
-                && !evt.target.parentNode.matches('.modal-content') && !evt.target.parentNode.parentNode.matches('.modal-content')) {
-            var modals = this.querySelectorAll('.modal');
-            for (var i = 0; i < modals.length; i++) {
-              modals[i].style.display = "none";
-            }
-          }
-        });
 
         ///////SEARCH FOR EDIT, CREATE, FILTER, ... (FOR <SELECT> TAGS)
         this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_location);
         this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_type);
         this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_form);
         this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_encounterRole);
+
+        this.encounterProvidersFormNumber=[];
+      }
+
+      GetRolesFromForm(roleIDPrefix){
+        var providersArray = [];
+        for(var i = 0; i < this.encounterProvidersFormNumber.length ; i++){
+          var EncounterRoleElement = this.shadowRoot.querySelector(roleIDPrefix+""+i);
+          providersArray.push({"provider":"", "encounterRole":EncounterRoleElement.options[EncounterRoleElement.selectedIndex].value});
+        }
+        return providersArray;
+      }
+
+      GetRolesAndProvidersFromForm(roleIDPrefix, providerIDPrefix){
+        var providersArray = [];
+        for(var i = 0; i < this.encounterProvidersFormNumber.length ; i++){
+          var EncounterRoleElement = this.shadowRoot.querySelector(roleIDPrefix+""+i);
+          providersArray.push({"provider":this.shadowRoot.querySelector(providerIDPrefix+""+i).value, "encounterRole":EncounterRoleElement.options[EncounterRoleElement.selectedIndex].text});
+        }
+        return providersArray;
+      }
+
+      PutRolesAndProvidersToForm(arrayWithValues, roleIDPrefix, providerIDPrefix){
+        for(var i = 0; i < this.encounterProvidersFormNumber.length ; i++){
+          this.SetSelectedInSelect(arrayWithValues[i].encounterRole,this.shadowRoot.querySelector(roleIDPrefix+""+i));
+          this.shadowRoot.querySelector(providerIDPrefix+""+i).value = arrayWithValues[i].provider;
+        }
       }
 
 /////////DELETE//////////////
@@ -784,16 +830,37 @@
 
 /////////EDIT//////////////
       OpenEditModal(e) {
+        this.encounterProvidersFormNumber=[];
         this.$.editEncounterModal.style.display = "block";
         this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
+        this.SetValuesToEdit(e);
+      }
 
-        //Set values to edit
-        var encounterToEdit = this.GetMatchingEncounter(e.target.value);
-        this.$.editEncDataDate.value = encounterToEdit.encounterDatetime;
-        this.SetSelectedInSelect(encounterToEdit.form.name, this.$.editEncDataForm);
-        this.SetSelectedInSelect(encounterToEdit.encounterType.name,this.$.editEncDataType);
-        this.SetSelectedInSelect(encounterToEdit.location.name,this.$.editEncDataLocation);
-        this.$.editEncDataProviders.value = encounterToEdit.encounterProviders[0].provider.display;
+      SetValuesToEdit(e){
+        this.currentEncounterToEdit = this.GetMatchingEncounter(e.target.value);
+        this.$.editEncDataDate.value = this.currentEncounterToEdit.encounterDatetime;
+        this.SetSelectedInSelect(this.currentEncounterToEdit.form.name, this.$.editEncDataForm);
+        this.SetSelectedInSelect(this.currentEncounterToEdit.encounterType.name,this.$.editEncDataType);
+        this.SetSelectedInSelect(this.currentEncounterToEdit.location.name,this.$.editEncDataLocation);
+        var tmp = [];
+        for (var i = 0; i < this.encounterProvidersFormNumber.length+this.currentEncounterToEdit.encounterProviders.length; i++) {
+          tmp.push(""+i);
+        }
+        this.encounterProvidersFormNumber = tmp;
+        SetEditProviderValues(this.shadowRoot, this.currentEncounterToEdit);
+      }
+
+      RemoveProvider_Edit(e){
+        var currentProviders = this.currentEncounterToEdit.encounterProviders;
+        var index = currentProviders.indexOf(currentProviders[e.target.value]);
+        currentProviders.splice(index, 1);//delete
+        this.encounterProvidersFormNumber.splice(-1,1);
+        var e={
+          target : {
+            value: this.currentEncounterToEdit.uuid
+          }
+        }
+        this.OpenEditModal(e);
       }
 
 
@@ -818,20 +885,48 @@
       }
 
       EditEncounterBtnClicked(){
+        if(this.encounterProvidersFormNumber.length !="")  {
+          this.Edit_EncounterObj();
+          this.providerCallsToDo={
+            quantity : this.encounterProvidersFormNumber.length,
+            current : 0
+          };
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit,  this.shadowRoot.querySelector("#provider_edit"+this.providerCallsToDo.current).value);
+        }else{
+          this.Edit_EncounterObjWithoutProviders();
+          this.$.iron_ajax_create.generateRequest();
+        }
+      }
+
+      Edit_EncounterObj(){
         this.editEncounterObj = {
-          "encounterProviders": [{"provider":"", "encounterRole":this.$.editEncDataRole.options[this.$.editEncDataRole.selectedIndex].value}],
+          "encounterProviders": this.GetRolesFromForm("#role_edit"),
           "form": this.$.editEncDataForm.options[this.$.editEncDataForm.selectedIndex].value,
           "patient": this.encounters[0].patient.uuid,
           "location": this.$.editEncDataLocation.options[this.$.editEncDataLocation.selectedIndex].value,
           "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
           "encounterType": this.$.editEncDataType.options[this.$.editEncDataType.selectedIndex].value
         };
-        this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit, this.$.editEncDataProviders.value);
+      }
+
+      Edit_EncounterObjWithoutProviders(){
+        this.editEncounterObj = {
+          "form": this.$.editEncDataForm.options[this.$.editEncDataForm.selectedIndex].value,
+          "patient": this.encounters[0].patient.uuid,
+          "location": this.$.editEncDataLocation.options[this.$.editEncDataLocation.selectedIndex].value,
+          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
+          "encounterType": this.$.editEncDataType.options[this.$.editEncDataType.selectedIndex].value
+        };
       }
 
       handleResponseGetProviderEdit(data){
-        this.editEncounterObj.encounterProviders[0].provider = data.detail.response.results[0].uuid;
-        this.$.iron_ajax_edit.generateRequest();
+        this.editEncounterObj.encounterProviders[this.providerCallsToDo.current].provider = data.detail.response.results[0].uuid;
+        this.providerCallsToDo.current++;
+        if(this.providerCallsToDo.current < this.providerCallsToDo.quantity){
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit, this.shadowRoot.querySelector("#provider_edit"+this.providerCallsToDo.current).value);
+        }else{
+          this.$.iron_ajax_edit.generateRequest();
+        }
       }
 
       handleResponseEdit(data){
@@ -848,15 +943,26 @@
 
         for (var i = 0; i < this.encounters.length; i++) {
           var date = new Date(parseDateReturnDate(this.encounters[i].encounterDatetime));
-
-          var ObjToPush = {
-            uuid: this.encounters[i].uuid,
-            encounterDatetime: date,
-            encounterType: this.encounters[i].encounterType.display,
-            form: this.encounters[i].form.display,
-            location: this.encounters[i].location.display,
-            provider: this.encounters[i].encounterProviders[0].provider.display
-          };
+          var ObjToPush;
+          if(this.encounters[i].encounterProviders.length > 0){
+            ObjToPush = {
+              uuid: this.encounters[i].uuid,
+              encounterDatetime: date,
+              encounterType: this.encounters[i].encounterType.display,
+              form: this.encounters[i].form.display,
+              location: this.encounters[i].location.display,
+              provider: this.encounters[i].encounterProviders[0].provider.display
+            };
+          }else{
+            ObjToPush = {
+              uuid: this.encounters[i].uuid,
+              encounterDatetime: date,
+              encounterType: this.encounters[i].encounterType.display,
+              form: this.encounters[i].form.display,
+              location: this.encounters[i].location.display,
+              provider: "z"
+            };
+          }
           simpleArrayToSort.push(ObjToPush);
         }
         var simple_sorted = sortByKey(simpleArrayToSort, key, asc);
@@ -962,16 +1068,32 @@
 /////////CREATE NEW//////////////
       OpenCreateModal() {
         this.$.createEncounterModal.style.display = "block";
+        this.encounterProvidersFormNumber=[];
       }
 
       CloseCreateModal() {
         this.$.createEncounterModal.style.display = "none";
       }
 
+      RemoveProvider_Create(e){
+        var currentProviders = this.GetRolesAndProvidersFromForm("#role","#provider");
+        var index = currentProviders.indexOf(currentProviders[e.target.value]);
+        currentProviders.splice(index, 1);//delete
+        var tmp = this.encounterProvidersFormNumber;
+        tmp.splice(-1,1);
+        this.encounterProvidersFormNumber=[];
+        this.encounterProvidersFormNumber=tmp;
+        this.PutRolesAndProvidersToForm(currentProviders, "#role","#provider");
+      }
+
       CreateEncounterBtnClicked() {
-        if(this.$.createEncDataProviders.value !="")  {
+        if(this.encounterProvidersFormNumber.length !="")  {
           this.CreateEncounterObj();
-          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers, this.$.createEncDataProviders.value);
+          this.providerCallsToDo={
+            quantity : this.encounterProvidersFormNumber.length,
+            current : 0
+          };
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers,  this.shadowRoot.querySelector("#provider"+this.providerCallsToDo.current).value);
         }else{
           this.CreateEncounterObjWithoutProviders();
           this.$.iron_ajax_create.generateRequest();
@@ -980,13 +1102,18 @@
       }
 
       handleResponseGetProvider(data) {
-        this.newEncounterObj.encounterProviders[0].provider = data.detail.response.results[0].uuid;
-        this.$.iron_ajax_create.generateRequest();
+        this.newEncounterObj.encounterProviders[this.providerCallsToDo.current].provider = data.detail.response.results[0].uuid;
+        this.providerCallsToDo.current++;
+        if(this.providerCallsToDo.current < this.providerCallsToDo.quantity){
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers, this.shadowRoot.querySelector("#provider"+this.providerCallsToDo.current).value);
+        }else{
+          this.$.iron_ajax_create.generateRequest();
+        }
       }
 
       CreateEncounterObj() {
         this.newEncounterObj = {
-          "encounterProviders": [{"provider":"", "encounterRole":this.$.createEncDataRole.options[this.$.createEncDataRole.selectedIndex].value}],
+          "encounterProviders": this.GetRolesFromForm("#role"),
           "form": this.$.createEncDataForm.options[this.$.createEncDataForm.selectedIndex].value,
           "patient": this.encounters[0].patient.uuid,
           "location": this.$.createEncDataLocation.options[this.$.createEncDataLocation.selectedIndex].value,
@@ -1011,6 +1138,17 @@
         this.$.iron_ajax_get_all.generateRequest();
       }
 
+      IncreaseEncounterProvidersFormNumber(e){
+        var tmp = [];
+
+        for (var i = 0; i < this.encounterProvidersFormNumber.length+1; i++) {
+          tmp.push(""+i);
+        }
+
+        this.encounterProvidersFormNumber = tmp;
+      }
+
+
 
 /////////PAGINATION//////////////
       PushPage(encounters) {
@@ -1033,7 +1171,6 @@
               filteredEncounters.push(encounters[i]);
             }
         }
-        console.log(filteredEncounters);
         var encountersToReturn = [];
 
         //putToShow
@@ -1145,6 +1282,23 @@
         }
       });
     }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function SetEditProviderValues(shadowRoot, encounterToEdit) {
+      await sleep(10);
+      for(var x = 0 ; x < encounterToEdit.encounterProviders.length; x++){
+        shadowRoot.querySelector("#provider_edit"+x).value = encounterToEdit.encounterProviders[x].provider.display;
+        for (var i = 0; i < shadowRoot.querySelector("#role_edit"+x).options.length ; i++){
+          if(shadowRoot.querySelector("#role_edit"+x).options[i].text == encounterToEdit.encounterProviders[x].encounterRole.display){
+            shadowRoot.querySelector("#role_edit"+x).options[i].selected = true;
+          }
+        }
+      }
+    }
+
   </script>
 
 </dom-module>
