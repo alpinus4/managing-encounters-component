@@ -9,9 +9,7 @@ Tested on Firefox 57.0.4 and Chrome 63.0.3239.132.
 ```
 git clone https://github.com/alpinus4/managing-encounters-component
 ```
-2. #### Download zip file:
-
-
+2. #### Download zip file.
 
 
 ## How to use?
