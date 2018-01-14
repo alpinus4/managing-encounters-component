@@ -17,7 +17,8 @@ git clone https://github.com/alpinus4/managing-encounters-component
 1. Basic usage:
 ```html
 <link rel="import" href="encounters-management.html"> <!-- In head-->
-<encounters-management id="encounters_management_component_id" rest-url="http://localhost:8080/lh-toolkit/ws/rest/v1"/> <!-- In body-->
+<encounters-management id="encounters_management_component_id" 
+                       rest-url="http://localhost:8080/lh-toolkit/ws/rest/v1"/> <!-- In body-->
 ```
 2. Custom CSS properties:
 ```css
