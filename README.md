@@ -20,7 +20,7 @@ git clone https://github.com/alpinus4/managing-encounters-component
 <encounters-management id="encounters_management_component_id" 
                        rest-url="http://localhost:8080/lh-toolkit/ws/rest/v1"/> <!-- In body-->
 ```
-2. Custom CSS properties:
+2. Custom CSS properties. Values inserted show default values.
 ```css
 #encounters_management_component_id {
 
