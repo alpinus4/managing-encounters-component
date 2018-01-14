@@ -79,6 +79,7 @@
         box-shadow: 3px 10px 20px -3px rgba(97, 97, 97, 0.5);
         border-radius: 0;
         background: var(--encounters-management-search-bar-background-color, rgb(255, 255, 255));
+        color: background: var(--encounters-management-search-bar-text-color, inherit));
         width: 40%;
         float: left;
       }
@@ -111,6 +112,7 @@
 
       :host .my-btn-default:active, .my-btn-default:focus, .my-btn-default:hover{
         background: var(--encounters-management-button-background-color, rgb(255, 255, 255));
+        color: var(--encounters-management-button-text-color, inherit);
       }
 
 
@@ -195,6 +197,7 @@
           background-color: rgb(0,0,0);
           background-color: rgba(0,0,0,0.4);
           font-size: var(--encounters-management-font-size-modal , 16pt);
+          color:  var(--encounters-management-font-color-modal , inherit);
       }
 
       .modal-content-my {
@@ -212,6 +215,7 @@
 
       .modal-content-my button{
           font-size: var(--encounters-management-font-size-modal-buttons , 16pt);
+          color: var(--encounters-management-font-color-modal-buttons , inherit);
       }
 
 
@@ -427,7 +431,7 @@
       <template is="dom-if" if="{{notFound}}">not found</template></div>
   </div>
   <div id="pagination">
-    <span id="pageCount">1/5</span>
+    <span id="pageCount">0/0</span>
     <button class="btn-default pageBtn my-btn-default" on-click="PreviousPage">
             <img src="./images/ic_chevron_left_black_48dp_2x.png" width="30px" height="30px">
         </button>
@@ -503,7 +507,7 @@
 
   <!-- BASE ACTIONS-->
   <iron-ajax
-  url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
   params='{{searchQueryObj}}'
   content-type="application/json"
   handle-as="json"
@@ -514,7 +518,7 @@
   id="iron_ajax_get_all"></iron-ajax>
 
   <iron-ajax
-  url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
   body='{{newEncounterObj}}'
   content-type="application/json"
   handle-as="json"
@@ -619,6 +623,11 @@
             type: Array,
             notice: true
           },
+          restUrl: {
+            type: String,
+            notice: true,
+            observer: "_SetUrls"
+          },
           encountersToDisplay: {
             type: Array,
             notice: true
@@ -708,6 +717,19 @@
         this.encounterProvidersFormNumber = [];
       }
 
+      _SetUrls(){
+        ///SET SOME AJAX URLs
+        this.$.iron_ajax_get_all.url = this.restUrl + "/encounter";
+        this.$.iron_ajax_create.url = this.restUrl + "/encounter";
+
+        this.$.iron_ajax_get_providers.url = this.restUrl + "/provider";
+        this.$.iron_ajax_get_providers_edit.url = this.restUrl + "/provider";
+        this.$.iron_ajax_get_type.url = this.restUrl + "/encountertype";
+        this.$.iron_ajax_get_location.url = this.restUrl + "/location";
+        this.$.iron_ajax_get_form.url = this.restUrl + "/form";
+        this.$.iron_ajax_get_encounterRole.url = this.restUrl + "/encounterrole";
+      }
+
       GetRolesFromForm(roleIDPrefix) {
         var providersArray = [];
         for (var i = 0; i < this.encounterProvidersFormNumber.length; i++) {
@@ -741,15 +763,9 @@
 
       /////////DELETE//////////////
       DeleteItem(e) {
-        console.log(e.target);
-        this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
+        this.deleteEditURL = this.restUrl + "/encounter/" + e.target.value;
         this.$.iron_ajax_delete.generateRequest();
         this.RefreshAll();
-      }
-
-      /////////IMPORT//////////////
-      Import() {
-        console.log("import");
       }
 
       /////////SEARCH//////////////
@@ -840,7 +856,7 @@
       OpenEditModal(e) {
         this.encounterProvidersFormNumber = [];
         this.$.editEncounterModal.style.display = "block";
-        this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
+        this.deleteEditURL = this.restUrl + "/encounter/" + e.target.value;
         this.SetValuesToEdit(e.target.value);
       }
 
