@@ -6,3 +6,10 @@ body, #encountersManagement{
   background: rgb(228, 228, 228);
   font-family: 'Roboto';
 }
+
+
+  @media only screen and (min-width : 992px) {
+    body{
+      overflow-y: hidden;
+    }
+   }

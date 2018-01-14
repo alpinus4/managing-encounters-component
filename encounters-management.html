@@ -20,6 +20,7 @@
         padding: var(--encounters-management-padding , 20px);
       }
 
+
       :host #content {
         width: 100%;
         height: 100%;
@@ -37,13 +38,6 @@
         color: var(--encounters-management-font-color-header-patient-name , rgb(62, 62, 62));
         margin-left: 2%;
         display: inline-block;
-      }
-
-
-      /*INDEX*/
-      :host .index {
-        font-size: var(--encounters-management-font-size-index , inherit);
-        color: var(--encounters-management-font-color-index , inherit);
       }
 
 
@@ -70,11 +64,11 @@
       /* TABLE*/
       :host .table-striped>tbody>tr:nth-child(odd)>td,
             .table-striped>tbody>tr:nth-child(odd)>th {
-        background-color: rgb(255, 243, 228);
+        background-color: var(--encounters-management-table-stripes-background-color, rgb(255, 243, 228));
       }
 
       :host .white-table {
-        background-color: rgb(255, 255, 255);
+        background-color: var(--encounters-management-table-no-stripes-background-color, rgb(255, 255, 255));
         box-shadow: 3px 10px 20px -3px rgba(97, 97, 97, 0.5);
       }
 
@@ -84,7 +78,7 @@
         border: none;
         box-shadow: 3px 10px 20px -3px rgba(97, 97, 97, 0.5);
         border-radius: 0;
-        background: rgb(255, 255, 255);
+        background: var(--encounters-management-search-bar-background-color, rgb(255, 255, 255));
         width: 40%;
         float: left;
       }
@@ -116,7 +110,7 @@
       }
 
       :host .my-btn-default:active, .my-btn-default:focus, .my-btn-default:hover{
-        background: rgb(255, 255, 255);
+        background: var(--encounters-management-button-background-color, rgb(255, 255, 255));
       }
 
 
@@ -152,7 +146,7 @@
       :host #recordsCount {
         margin-left: 2%;
         color: var(--encounters-management-font-color-records-count  , rgb(62, 62, 62));
-        font-size: 15pt;
+        font-size: var(--encounters-management-font-size-records-count, 15pt);
       }
 
       :host .pageBtn {
@@ -175,7 +169,7 @@
       .loading-spinner {
         border: 6px solid #f3f3f3;
         border-radius: 50%;
-        border-top: 6px solid #141414;
+        border-top: 6px solid var(--encounters-management-loading-spinner-color, #141414);
         width: 40px;
         height: 40px;
         animation: spin 2s linear infinite;
@@ -188,81 +182,70 @@
 
 
       /*MODAL From: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal - BOOTSTRAP NOT WORKING*/
-      .modal {
+      .modal-my {
           display: none;
-          position: fixed;
+          position: absolute !important;
           z-index: 1;
-          padding-top: 100px;
+          padding-top: 5%;
           left: 0;
           top: 0;
           width: 100%;
           height: 100%;
-          overflow: auto;
+          overflow-y: scroll;
           background-color: rgb(0,0,0);
           background-color: rgba(0,0,0,0.4);
-          font-size: 16pt;
+          font-size: var(--encounters-management-font-size-modal , 16pt);
       }
 
-      .modal-content {
-          background-color: #fefefe;
+      .modal-content-my {
+          background-color: var(--encounters-management-modal-background-color , #fefefe);
           margin: auto;
           padding: 20px;
           border: 1px solid #888;
-          width: 80%;
+          width: 50%;
+          display: block;
       }
 
-      .modal-content hr {
+      .modal-content-my hr {
           border-width: 2px;
       }
 
-      .modal-content button{
-          font-size: 16pt;
+      .modal-content-my button{
+          font-size: var(--encounters-management-font-size-modal-buttons , 16pt);
       }
 
 
-      .close-modal {
-          color: #aaaaaa;
+      .close-modal-my {
+          color: var(--encounters-management-close-modal-icon-color, #aaaaaa);
           float: right;
           font-size: 28px;
           font-weight: bold;
       }
 
-      .close-modal:hover,
-      .close-modal:focus {
-          color: #000;
+      .close-modal-my:hover,
+      .close-modal-my:focus {
+          color: var(--encounters-management-close-modal-icon-color-focus-hover, #000);
           text-decoration: none;
           cursor: pointer;
       }
 
+      :host #createEncDataDate, #editEncDataDate, .providerInput {
+        width: 40%;
+        max-width: 14em;
+      }
 
-    /* DROPDOWN from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
-    Bootstrap not working*/
+      :host #createEncDataForm, #editEncDataForm,
+            #createEncDataType, #editEncDataType,
+            #createEncDataLocation, #editEncDataLocation, .roleInput
+            {
+        width: auto;
+        max-width: 50%;
+      }
 
-    .dropdown {
-      display: inline-block;
-      position: relative;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      overflow: auto;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
-
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-
-    .dropdown a:hover {background-color: #f1f1f1}
-
-    .show {display:block;}
+      :host .removeProvider {
+        float: right;
+        margin-right: 10%;
+      }
 
     .currentSortingSetting {
       transform: scale(1.2);
@@ -271,205 +254,215 @@
 
 <div id="content">
       <!-- CREATE ENCOUNTER MODAL-->
-      <div id="createEncounterModal" class="modal">
+      <div id="createEncounterModal" class="modal-my">
 
-        <div class="modal-content">
-          <span class="close-modal" on-click="CloseCreateModal">&times;</span>
+        <div class="modal-content-my">
+          <span class="close-modal-my" on-click="CloseCreateModal">&times;</span>
           <h2>Create new encounter</h2>
           <hr></br>
           Location: <select class="form-control input-lg" id="createEncDataLocation">
                 <template is="dom-repeat" items="[[availableLocations]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
-              </select></br>
-          Encounter Date: <input type="text" class="form-control input-lg" id="createEncDataDate"></input></br>
-          Encounter Type: <select class="form-control input-lg" id="createEncDataType">
+  </select>
+  </br>
+  Encounter Date: <input type="text" class="form-control input-lg" id="createEncDataDate"></input>
+  </br>
+  Encounter Type: <select class="form-control input-lg" id="createEncDataType">
                 <template is="dom-repeat" items="[[availableTypes]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          Form: <select class="form-control input-lg" id="createEncDataForm">
+  Form: <select class="form-control input-lg" id="createEncDataForm">
                 <template is="dom-repeat" items="[[availableForms]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
 
-              <button type='button' class="btn btn-default" on-click="IncreaseEncounterProvidersFormNumber">
+  <button type='button' class="btn btn-default" on-click="IncreaseEncounterProvidersFormNumber">
                 Add encounter provider
               </button></br>
-              <div id="createEncDataProviders">
-                <template is="dom-repeat" items="[[encounterProvidersFormNumber]]">
-                  Encounter provider [[index]]</br>
-                  Providers: <input type="text" class="form-control input-lg" id="provider[[index]]"></input>
-                  Provider role:<select class="form-control input-lg" id="role[[index]]">
+  </br>
+  <div id="createEncDataProviders">
+    <template is="dom-repeat" items="[[encounterProvidersFormNumber]]">
+                  <h3>{{displayIndex(index)}}.</h3>
+                  Provider: <input type="text" class="form-control input-lg providerInput" id="provider[[index]]"></input>
+                  <button type='button' class="btn btn-default removeProvider" value="[[index]]" on-click="RemoveProvider_Create">
+                    <img src="./images/ic_delete_black_48dp_2x.png" width="30px" height="30px">
+                    Remove provider
+                  </button>
+                  Provider role:<select class="form-control input-lg roleInput" id="role[[index]]">
                         <template is="dom-repeat" items="[[availableEncounterRoles]]">
                           <option value="{{item.uuid}}">{{item.name}}</option>
                         </template>
-                      </select>
-                      <button type='button' class="btn btn-default" value="[[index]]" on-click="RemoveProvider_Create">
-                        <img src="./images/ic_delete_black_48dp_2x.png" width="30px" height="30px">
-                      </button>
-                    </br></br>
-                </template>
-              </div>
-          <button type='button' class="btn btn-default" id="createEncounerBtn" on-click="CreateEncounterBtnClicked">
+    </select>
+    </br>
+    </br>
+    </template>
+  </div>
+  <button type='button' class="btn btn-default" id="createEncounerBtn" on-click="CreateEncounterBtnClicked">
             Create
           </button>
-        </div>
-      </div>
+  </div>
+  </div>
 
-      <!-- EDIT ENCOUNTER MODAL-->
-      <div id="editEncounterModal" class="modal">
+  <!-- EDIT ENCOUNTER MODAL-->
+  <div id="editEncounterModal" class="modal-my">
 
-        <div class="modal-content">
-          <span class="close-modal" on-click="CloseEditModal">&times;</span>
-          <h2>Edit encounter</h2>
-          <hr></br>
-          Location: <select class="form-control input-lg" id="editEncDataLocation">
+    <div class="modal-content-my">
+      <span class="close-modal-my" on-click="CloseEditModal">&times;</span>
+      <h2>Edit encounter</h2>
+      <hr>
+      </br>
+      Location: <select class="form-control input-lg" id="editEncDataLocation">
                 <template is="dom-repeat" items="[[availableLocations]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          Encounter Date: <input type="text" class="form-control input-lg" id="editEncDataDate"></input></br>
-          Encounter Type: <select class="form-control input-lg" id="editEncDataType">
+      Encounter Date: <input type="text" class="form-control input-lg" id="editEncDataDate"></input>
+      </br>
+      Encounter Type: <select class="form-control input-lg" id="editEncDataType">
                 <template is="dom-repeat" items="[[availableTypes]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
-          Form: <select class="form-control input-lg" id="editEncDataForm">
+      Form: <select class="form-control input-lg" id="editEncDataForm">
                 <template is="dom-repeat" items="[[availableForms]]">
                   <option value="{{item.uuid}}">{{item.name}}</option>
                 </template>
               </select></br>
 
-              <button type='button' class="btn btn-default" on-click="IncreaseEncounterProvidersFormNumber">
+      <button type='button' class="btn btn-default" on-click="IncreaseEncounterProvidersFormNumber">
                 Add encounter provider
               </button></br>
-              <div id="editEncDataProviders">
-                <template is="dom-repeat" items="[[encounterProvidersFormNumber]]">
-                  Encounter provider [[index]]</br>
-                  Providers: <input type="text" class="form-control input-lg" id="provider_edit[[index]]"></input>
-                  Provider role:<select class="form-control input-lg" id="role_edit[[index]]">
+      </br>
+      <div id="editEncDataProviders">
+        <template is="dom-repeat" items="[[encounterProvidersFormNumber]]">
+                  <h3>{{displayIndex(index)}}.</h3>
+                  Provider: <input type="text" class="form-control input-lg providerInput" id="provider_edit[[index]]"></input>
+                  <button type='button' class="btn btn-default removeProvider" value="[[index]]" on-click="RemoveProvider_Edit">
+                    <img src="./images/ic_delete_black_48dp_2x.png" width="30px" height="30px">
+                    Remove provider
+                  </button>
+                  Provider role:<select class="form-control input-lg roleInput" id="role_edit[[index]]">
                         <template is="dom-repeat" items="[[availableEncounterRoles]]">
                           <option value="{{item.uuid}}">{{item.name}}</option>
                         </template>
-                      </select>
-                  <button type='button' class="btn btn-default" value="[[index]]" on-click="RemoveProvider_Edit">
-                    <img src="./images/ic_delete_black_48dp_2x.png" width="30px" height="30px">
-                  </button>
-                    </br></br>
-                </template>
-              </div>
-
-          <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="EditEncounterBtnClicked">
-            Save changes
-          </button>
-        </div>
+        </select>
+        </br>
+        </br>
+        </template>
       </div>
 
-      <!-- FILTER MODAL-->
-      <div id="filterModal" class="modal">
+      <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="EditEncounterBtnClicked">
+            Save changes
+          </button>
+    </div>
+  </div>
 
-        <div class="modal-content">
-          <span class="close-modal" on-click="CloseFilterModal">&times;</span>
-          <h2>Filters</h2>
-          <hr></br>
-          <h3>Date range:</h3> </br>
-          From: <input type="text" class="form-control input-lg" id="filterInputFromDate"></input>
-          To: <input type="text" class="form-control input-lg" id="filterInputToDate"></input>
-          </br>
+  <!-- FILTER MODAL-->
+  <div id="filterModal" class="modal-my">
 
-          <h3>Encounter type:</h3></br>
-              <select class="form-control input-lg" id="filterInputEncounterType">
+    <div class="modal-content-my">
+      <span class="close-modal-my" on-click="CloseFilterModal">&times;</span>
+      <h2>Filters</h2>
+      <hr>
+      </br>
+      <h3>Date range:</h3> </br>
+      From: <input type="text" class="form-control input-lg" id="filterInputFromDate"></input>
+      To: <input type="text" class="form-control input-lg" id="filterInputToDate"></input>
+      </br>
+
+      <h3>Encounter type:</h3></br>
+      <select class="form-control input-lg" id="filterInputEncounterType">
                 <option>All</option>
                 <template is="dom-repeat" items="[[availableTypes]]">
                   <option>{{item.name}}</option>
                 </template>
               </select></br>
 
-          <button type='button' class="btn btn-default" id="FilterBtn" on-click="Filter">
+      <button type='button' class="btn btn-default" id="FilterBtn" on-click="Filter">
             Filter
           </button>
-        </div>
-      </div>
+    </div>
+  </div>
 
 
 
-      <div class="header">Encounters</div></br></br>
-      <form id="searchForm" action="javascript:void(0);">
-          <div id="searchBar">
-            <input type="button" on-click="NewSearchQuery" id="changesq" name="changesq" class="hidden">
-            <input type="text" class="form-control input-lg" id="searchBarInput" name="searchBarInput">
-            <button type='submit' class="transparentBtn" id="searchBtn">
+  <div class="header">Encounters</div>
+  </br>
+  </br>
+  <form id="searchForm" action="javascript:void(0);">
+    <div id="searchBar">
+      <input type="button" on-click="NewSearchQuery" id="changesq" name="changesq" class="hidden">
+      <input type="text" class="form-control input-lg" id="searchBarInput" name="searchBarInput">
+      <button type='submit' class="transparentBtn" id="searchBtn">
               <img src="./images/ic_search_black_48dp_2x.png" width="70px" height="70px">
             </button>
-          </div>
-      </form>
-      <span class="glyphicons glyphicons-filter"></span>
-      <div id="resultsParams">
+    </div>
+  </form>
+  <span class="glyphicons glyphicons-filter"></span>
+  <div id="resultsParams">
 
-          <button class="btn-default my-btn-default drp-btn" id="filtersBtn" on-click="FiltersModalShow">
+    <button class="btn-default my-btn-default drp-btn" id="filtersBtn" on-click="FiltersModalShow">
             <img src="./images/ic_filter_list_black_48dp_2x.png" width="70px" height="70px"> Filters
           </button>
 
-        <template is="dom-if" if="{{filters}}">
+    <template is="dom-if" if="{{filters}}">
           <button class="btn-default my-btn-default drp-btn" id="clearFiltersBtn" on-click="ClearFilters">
             <img src="./images/ic_filter_list_black_48dp_2x.png" width="70px" height="70px"> Clear filters
           </button>
         </template>
 
-        <button class="btn-default my-btn-default drp-btn" id="refreshBtn" on-click="RefreshAll">
+    <button class="btn-default my-btn-default drp-btn" id="refreshBtn" on-click="RefreshAll">
           <img src="./images/ic_refresh_black_48dp_2x.png" width="50px" height="50px">
         </button>
 
-      </div>
-      <div id="actions">
-        <button class="btn-default my-btn-default" on-click="OpenCreateModal">
+  </div>
+  <div id="actions">
+    <button class="btn-default my-btn-default" on-click="OpenCreateModal">
           <img src="./images/ic_add_black_48dp_2x.png" width="30px" height="30px">  Create
         </button>
-        <button class="btn-default my-btn-default" on-click="Import">
-            <img src="./images/ic_file_upload_black_48dp_2x.png" width="30px" height="30px"> Import
-        </button>
-        <div id="headerPatientName">For {{encounters.0.patient.display}}
-        <template is="dom-if" if="{{notFound}}">not found</template></div>
-      </div>
-      <div id="pagination">
-        <span id="pageCount">1/5</span>
-        <button class="btn-default pageBtn my-btn-default" on-click="PreviousPage">
+    <div id="headerPatientName">For {{encounters.0.patient.display}}
+      <template is="dom-if" if="{{notFound}}">not found</template></div>
+  </div>
+  <div id="pagination">
+    <span id="pageCount">1/5</span>
+    <button class="btn-default pageBtn my-btn-default" on-click="PreviousPage">
             <img src="./images/ic_chevron_left_black_48dp_2x.png" width="30px" height="30px">
         </button>
-        <button class="btn-default pageBtn my-btn-default" on-click="NextPage">
+    <button class="btn-default pageBtn my-btn-default" on-click="NextPage">
             <img src="./images/ic_chevron_right_black_48dp_2x.png" width="30px" height="30px">
         </button>
-        <span id="recordsCount">{{encounters.length}} records</span>
-      </div>
-      <table class="table table-striped white-table">
-        <thead id="tableHeaders">
-          <tr>
-            <th><img src="./images/ic_settings_black_48dp_2x.png" width="30px" height="30px"></th>
-            <th>Encounter date <button class="transparentBtn asc" value="encounterDatetime" on-click="ClickedSort">
+    <span id="recordsCount">{{encountersToDisplayTotalQuantity}} records</span>
+  </div>
+  <table class="table table-striped white-table">
+    <thead id="tableHeaders">
+      <tr>
+        <th><img src="./images/ic_settings_black_48dp_2x.png" width="30px" height="30px"></th>
+        <th>Encounter date <button class="transparentBtn asc" value="encounterDatetime" on-click="ClickedSort">
                 <img src="./images/sort1.png" width="30px" height="30px">
               </button></th>
 
-            <th>Encounter type <button class="transparentBtn asc" value="encounterType" on-click="ClickedSort">
+        <th>Encounter type <button class="transparentBtn asc" value="encounterType" on-click="ClickedSort">
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
 
-            <th>Form <button class="transparentBtn asc" value="form" on-click="ClickedSort">
+        <th>Form <button class="transparentBtn asc" value="form" on-click="ClickedSort">
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
 
-            <th>Provider <button class="transparentBtn asc" value="provider" on-click="ClickedSort">
+        <th>Provider <button class="transparentBtn asc" value="provider" on-click="ClickedSort">
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
 
-            <th>Location <button class="transparentBtn asc" value="location" on-click="ClickedSort">
+        <th>Location <button class="transparentBtn asc" value="location" on-click="ClickedSort">
               <img src="./images/sort1.png" width="30px" height="30px">
             </button></th>
-          </tr>
-        </thead>
-        <tbody>
-          <template is="dom-repeat" items="[[encountersToDisplay]]">
+      </tr>
+    </thead>
+    <tbody>
+      <template is="dom-repeat" items="[[encountersToDisplay]]">
             <tr>
               <td>
                 <button class="btn btn-default" on-click="OpenEditModal" value="{{item.uuid}}">
@@ -486,30 +479,31 @@
                 <template is="dom-repeat" items="[[item.encounterProviders]]">
                 {{item.provider.display}} &nbsp;
                 </template>
-  </td>
-  <td class="location">{{item.location.display}}</td>
-  </tr>
-  </template>
+      </td>
+      <td class="location">{{item.location.display}}</td>
+      </tr>
+      </template>
 
-  <template is="dom-if" if="{{notFound}}">
+      <template is="dom-if" if="{{notFound}}">
             <tr>
               <td colspan="7" align="center"></br>Not found any matching encounters.</td>
             </tr>
           </template>
 
-  <template is="dom-if" if="{{loading}}">
+      <template is="dom-if" if="{{loading}}">
             <tr>
             </br>
               <td colspan="7" align="center"><div class="loading-spinner"></div></td>
             </tr>
           </template>
 
-  </tbody>
+    </tbody>
   </table>
   </div>
 
-<!-- BASE ACTIONS-->
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  <!-- BASE ACTIONS-->
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
   params='{{searchQueryObj}}'
   content-type="application/json"
   handle-as="json"
@@ -519,45 +513,46 @@
   on-error="_error"
   id="iron_ajax_get_all"></iron-ajax>
 
-    <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
-    body='{{newEncounterObj}}'
-    content-type="application/json"
-     handle-as="json"
-     with-credentials="true"
-     on-response="handleResponseCreateNew"
-     method="POST"
-     on-error="_error"
-     id="iron_ajax_create"></iron-ajax>
-
-    <iron-ajax url="{{deleteEditURL}}"
-    with-credentials="true"
-    content-type="application/json"
-    method="DELETE"
-    on-error="_error"
-    id="iron_ajax_delete"></iron-ajax>
-
-    <iron-ajax url="{{deleteEditURL}}"
-    body='{{editEncounterObj}}'
-    content-type="application/json"
-    handle-as="json"
-    with-credentials="true"
-    on-response="handleResponseEdit"
-    method="POST"
-    on-error="_error"
-    id="iron_ajax_edit"></iron-ajax>
-
-<!-- TO CREATE AND EDIT -->
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
-  params=''
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+  body='{{newEncounterObj}}'
   content-type="application/json"
   handle-as="json"
   with-credentials="true"
+  on-response="handleResponseCreateNew"
+  method="POST"
+  on-error="_error"
+  id="iron_ajax_create"></iron-ajax>
+
+  <iron-ajax url="{{deleteEditURL}}"
+  with-credentials="true"
+  content-type="application/json"
+  method="DELETE"
+  on-error="_error"
+  id="iron_ajax_delete"></iron-ajax>
+
+  <iron-ajax url="{{deleteEditURL}}"
+  body='{{editEncounterObj}}'
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseEdit"
+  method="POST"
+  on-error="_error"
+  id="iron_ajax_edit"></iron-ajax>
+
+  <!-- TO CREATE AND EDIT -->
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
+  params='' content-type="application/json"
+  handle-as="json" with-credentials="true"
   on-response="handleResponseGetProvider"
   method="GET"
   on-error="_error"
   id="iron_ajax_get_providers"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
   params=''
   content-type="application/json"
   handle-as="json"
@@ -567,7 +562,8 @@
   on-error="_error"
   id="iron_ajax_get_providers_edit"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encountertype"
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/encountertype"
   params=''
   content-type="application/json"
   handle-as="json"
@@ -577,7 +573,8 @@
   on-error="_error"
   id="iron_ajax_get_type"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/location"
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/location"
   params=''
   content-type="application/json"
   handle-as="json"
@@ -587,7 +584,8 @@
   on-error="_error"
   id="iron_ajax_get_location"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/form"
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/form"
   params=''
   content-type="application/json"
   handle-as="json"
@@ -597,7 +595,8 @@
   on-error="_error"
   id="iron_ajax_get_form"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounterrole"
+  <iron-ajax
+  url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounterrole"
   params=''
   content-type="application/json"
   handle-as="json"
@@ -623,6 +622,9 @@
           encountersToDisplay: {
             type: Array,
             notice: true
+          },
+          encountersToDisplayTotalQuantity: {
+            type: Number
           },
           searchQuery: {
             type: String,
@@ -703,35 +705,41 @@
         this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_form);
         this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_encounterRole);
 
-        this.encounterProvidersFormNumber=[];
+        this.encounterProvidersFormNumber = [];
       }
 
-      GetRolesFromForm(roleIDPrefix){
+      GetRolesFromForm(roleIDPrefix) {
         var providersArray = [];
-        for(var i = 0; i < this.encounterProvidersFormNumber.length ; i++){
-          var EncounterRoleElement = this.shadowRoot.querySelector(roleIDPrefix+""+i);
-          providersArray.push({"provider":"", "encounterRole":EncounterRoleElement.options[EncounterRoleElement.selectedIndex].value});
+        for (var i = 0; i < this.encounterProvidersFormNumber.length; i++) {
+          var EncounterRoleElement = this.shadowRoot.querySelector(roleIDPrefix + "" + i);
+          providersArray.push({
+            "provider": "",
+            "encounterRole": EncounterRoleElement.options[EncounterRoleElement.selectedIndex].value
+          });
         }
         return providersArray;
       }
 
-      GetRolesAndProvidersFromForm(roleIDPrefix, providerIDPrefix){
+      GetRolesAndProvidersFromForm(roleIDPrefix, providerIDPrefix) {
         var providersArray = [];
-        for(var i = 0; i < this.encounterProvidersFormNumber.length ; i++){
-          var EncounterRoleElement = this.shadowRoot.querySelector(roleIDPrefix+""+i);
-          providersArray.push({"provider":this.shadowRoot.querySelector(providerIDPrefix+""+i).value, "encounterRole":EncounterRoleElement.options[EncounterRoleElement.selectedIndex].text});
+        for (var i = 0; i < this.encounterProvidersFormNumber.length; i++) {
+          var EncounterRoleElement = this.shadowRoot.querySelector(roleIDPrefix + "" + i);
+          providersArray.push({
+            "provider": this.shadowRoot.querySelector(providerIDPrefix + "" + i).value,
+            "encounterRole": EncounterRoleElement.options[EncounterRoleElement.selectedIndex].text
+          });
         }
         return providersArray;
       }
 
-      PutRolesAndProvidersToForm(arrayWithValues, roleIDPrefix, providerIDPrefix){
-        for(var i = 0; i < this.encounterProvidersFormNumber.length ; i++){
-          this.SetSelectedInSelect(arrayWithValues[i].encounterRole,this.shadowRoot.querySelector(roleIDPrefix+""+i));
-          this.shadowRoot.querySelector(providerIDPrefix+""+i).value = arrayWithValues[i].provider;
+      PutRolesAndProvidersToForm(arrayWithValues, roleIDPrefix, providerIDPrefix) {
+        for (var i = 0; i < this.encounterProvidersFormNumber.length; i++) {
+          this.SetSelectedInSelect(arrayWithValues[i].encounterRole, this.shadowRoot.querySelector(roleIDPrefix + "" + i));
+          this.shadowRoot.querySelector(providerIDPrefix + "" + i).value = arrayWithValues[i].provider;
         }
       }
 
-/////////DELETE//////////////
+      /////////DELETE//////////////
       DeleteItem(e) {
         console.log(e.target);
         this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
@@ -739,12 +747,12 @@
         this.RefreshAll();
       }
 
-/////////IMPORT//////////////
+      /////////IMPORT//////////////
       Import() {
         console.log("import");
       }
 
-/////////SEARCH//////////////
+      /////////SEARCH//////////////
       _changedSearchQuery() {
         this.searchQueryObj = {
           q: this.searchQuery,
@@ -791,72 +799,80 @@
       }
 
       /////SEARCH FOR <SELECT> TAGS
-          ///Location
-          handleResponseGetLocation(data) {
-            this.availableLocations = data.detail.response.results;
-          }
-
-          ///Type
-          handleResponseGetEncounterType(data) {
-            this.availableTypes = data.detail.response.results;
-          }
-
-          ///Form
-          handleResponseGetForm(data) {
-            this.availableForms = data.detail.response.results;
-          }
-
-          ///Role
-          handleResponseGetEncounterRole(data) {
-            this.availableEncounterRoles = data.detail.response.results;
-          }
-
-
-          GetAllAvailable_GenerateRequestAjax(ironAjax) {
-              ironAjax.params = {
-                v: "full"
-              };
-            ironAjax.generateRequest();
-          }
-
-
-          PutSQ_GenerateRequestAjax(ironAjax, sq) {
-              ironAjax.params = {
-                q: sq,
-                v: "full"
-              };
-            ironAjax.generateRequest();
-          }
-
-/////////EDIT//////////////
-      OpenEditModal(e) {
-        this.encounterProvidersFormNumber=[];
-        this.$.editEncounterModal.style.display = "block";
-        this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
-        this.SetValuesToEdit(e);
+      ///Location
+      handleResponseGetLocation(data) {
+        this.availableLocations = data.detail.response.results;
       }
 
-      SetValuesToEdit(e){
-        this.currentEncounterToEdit = this.GetMatchingEncounter(e.target.value);
+      ///Type
+      handleResponseGetEncounterType(data) {
+        this.availableTypes = data.detail.response.results;
+      }
+
+      ///Form
+      handleResponseGetForm(data) {
+        this.availableForms = data.detail.response.results;
+      }
+
+      ///Role
+      handleResponseGetEncounterRole(data) {
+        this.availableEncounterRoles = data.detail.response.results;
+      }
+
+
+      GetAllAvailable_GenerateRequestAjax(ironAjax) {
+        ironAjax.params = {
+          v: "full"
+        };
+        ironAjax.generateRequest();
+      }
+
+
+      PutSQ_GenerateRequestAjax(ironAjax, sq) {
+        ironAjax.params = {
+          q: sq,
+          v: "full"
+        };
+        ironAjax.generateRequest();
+      }
+
+      /////////EDIT//////////////
+      OpenEditModal(e) {
+        this.encounterProvidersFormNumber = [];
+        this.$.editEncounterModal.style.display = "block";
+        this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
+        this.SetValuesToEdit(e.target.value);
+      }
+
+      SetValuesToEdit(uuid) {
+
+        //get matching encounter
+        for (var i = 0; i < this.encountersToDisplay.length; i++) {
+          if (this.encountersToDisplay[i].uuid == uuid) {
+            this.currentEncounterToEdit = this.encountersToDisplay[i];
+          }
+        }
+
+        //set values
         this.$.editEncDataDate.value = this.currentEncounterToEdit.encounterDatetime;
         this.SetSelectedInSelect(this.currentEncounterToEdit.form.name, this.$.editEncDataForm);
-        this.SetSelectedInSelect(this.currentEncounterToEdit.encounterType.name,this.$.editEncDataType);
-        this.SetSelectedInSelect(this.currentEncounterToEdit.location.name,this.$.editEncDataLocation);
+        this.SetSelectedInSelect(this.currentEncounterToEdit.encounterType.name, this.$.editEncDataType);
+        this.SetSelectedInSelect(this.currentEncounterToEdit.location.name, this.$.editEncDataLocation);
         var tmp = [];
-        for (var i = 0; i < this.encounterProvidersFormNumber.length+this.currentEncounterToEdit.encounterProviders.length; i++) {
-          tmp.push(""+i);
+        for (var i = 0; i < this.encounterProvidersFormNumber.length + this.currentEncounterToEdit.encounterProviders.length; i++) {
+          tmp.push("" + i);
         }
         this.encounterProvidersFormNumber = tmp;
         SetEditProviderValues(this.shadowRoot, this.currentEncounterToEdit);
       }
 
-      RemoveProvider_Edit(e){
+      RemoveProvider_Edit(e) {
         var currentProviders = this.currentEncounterToEdit.encounterProviders;
         var index = currentProviders.indexOf(currentProviders[e.target.value]);
-        currentProviders.splice(index, 1);//delete
-        this.encounterProvidersFormNumber.splice(-1,1);
-        var e={
-          target : {
+        currentProviders.splice(index, 1); //delete
+        this.encounterProvidersFormNumber.splice(-1, 1);
+        var e = {
+          target: {
             value: this.currentEncounterToEdit.uuid
           }
         }
@@ -865,71 +881,64 @@
 
 
       CloseEditModal() {
-          this.$.editEncounterModal.style.display = "none";
+        this.$.editEncounterModal.style.display = "none";
       }
 
-      SetSelectedInSelect(value, element){
-        for (var i = 0; i < element.options.length ; i++){
-          if(element.options[i].text == value){
+      SetSelectedInSelect(value, element) {
+        for (var i = 0; i < element.options.length; i++) {
+          if (element.options[i].text == value) {
             element.options[i].selected = true;
           }
         }
       }
 
-      GetMatchingEncounter(encounteruuid) {
-        for (var i = 0; i < this.encountersToDisplay.length; i++) {
-          if (this.encountersToDisplay[i].uuid == encounteruuid) {
-            return this.encountersToDisplay[i];
-          }
-        }
-      }
 
-      EditEncounterBtnClicked(){
-        if(this.encounterProvidersFormNumber.length !="")  {
+      EditEncounterBtnClicked() {
+        if (this.encounterProvidersFormNumber.length != "") {
           this.Edit_EncounterObj();
-          this.providerCallsToDo={
-            quantity : this.encounterProvidersFormNumber.length,
-            current : 0
+          this.providerCallsToDo = {
+            quantity: this.encounterProvidersFormNumber.length,
+            current: 0
           };
-          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit,  this.shadowRoot.querySelector("#provider_edit"+this.providerCallsToDo.current).value);
-        }else{
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit, this.shadowRoot.querySelector("#provider_edit" + this.providerCallsToDo.current).value);
+        } else {
           this.Edit_EncounterObjWithoutProviders();
           this.$.iron_ajax_create.generateRequest();
         }
       }
 
-      Edit_EncounterObj(){
+      Edit_EncounterObj() {
         this.editEncounterObj = {
           "encounterProviders": this.GetRolesFromForm("#role_edit"),
           "form": this.$.editEncDataForm.options[this.$.editEncDataForm.selectedIndex].value,
           "patient": this.encounters[0].patient.uuid,
           "location": this.$.editEncDataLocation.options[this.$.editEncDataLocation.selectedIndex].value,
-          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
+          "encounterDatetime": "" + (new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
           "encounterType": this.$.editEncDataType.options[this.$.editEncDataType.selectedIndex].value
         };
       }
 
-      Edit_EncounterObjWithoutProviders(){
+      Edit_EncounterObjWithoutProviders() {
         this.editEncounterObj = {
           "form": this.$.editEncDataForm.options[this.$.editEncDataForm.selectedIndex].value,
           "patient": this.encounters[0].patient.uuid,
           "location": this.$.editEncDataLocation.options[this.$.editEncDataLocation.selectedIndex].value,
-          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
+          "encounterDatetime": "" + (new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
           "encounterType": this.$.editEncDataType.options[this.$.editEncDataType.selectedIndex].value
         };
       }
 
-      handleResponseGetProviderEdit(data){
+      handleResponseGetProviderEdit(data) {
         this.editEncounterObj.encounterProviders[this.providerCallsToDo.current].provider = data.detail.response.results[0].uuid;
         this.providerCallsToDo.current++;
-        if(this.providerCallsToDo.current < this.providerCallsToDo.quantity){
-          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit, this.shadowRoot.querySelector("#provider_edit"+this.providerCallsToDo.current).value);
-        }else{
+        if (this.providerCallsToDo.current < this.providerCallsToDo.quantity) {
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit, this.shadowRoot.querySelector("#provider_edit" + this.providerCallsToDo.current).value);
+        } else {
           this.$.iron_ajax_edit.generateRequest();
         }
       }
 
-      handleResponseEdit(data){
+      handleResponseEdit(data) {
         console.log("EDITED");
         console.log(data.detail.response);
         this.RefreshAll();
@@ -937,14 +946,14 @@
       }
 
 
-/////////SORT//////////////
+      /////////SORT//////////////
       Sort(key, asc = true) {
         var simpleArrayToSort = [];
 
         for (var i = 0; i < this.encounters.length; i++) {
           var date = new Date(parseDateReturnDate(this.encounters[i].encounterDatetime));
           var ObjToPush;
-          if(this.encounters[i].encounterProviders.length > 0){
+          if (this.encounters[i].encounterProviders.length > 0) {
             ObjToPush = {
               uuid: this.encounters[i].uuid,
               encounterDatetime: date,
@@ -953,7 +962,7 @@
               location: this.encounters[i].location.display,
               provider: this.encounters[i].encounterProviders[0].provider.display
             };
-          }else{
+          } else {
             ObjToPush = {
               uuid: this.encounters[i].uuid,
               encounterDatetime: date,
@@ -990,7 +999,7 @@
 
         var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
-        if(!isChrome) {
+        if (!isChrome) {
           e.target.classList.toggle("asc");
           if (e.target.classList.contains("asc")) {
             this.Sort(e.target.value);
@@ -1001,7 +1010,7 @@
             e.target.querySelector("img").src = "./images/sort2.png";
             e.target.classList.add("currentSortingSetting");
           }
-        }else{
+        } else {
           e.target.parentNode.classList.toggle("asc");
           if (e.target.parentNode.classList.contains("asc")) {
             this.Sort(e.target.parentNode.value);
@@ -1015,19 +1024,19 @@
         }
       }
 
-/////////FILTER//////////////
+      /////////FILTER//////////////
       Filter() {
         this.CloseFilterModal();
-        if(this.$.filterInputFromDate.value != "" || this.$.filterInputToDate.value != ""
-            || this.$.filterInputEncounterType.options[this.$.filterInputEncounterType.selectedIndex].text != "All"){
+        if (this.$.filterInputFromDate.value != "" || this.$.filterInputToDate.value != "" ||
+          this.$.filterInputEncounterType.options[this.$.filterInputEncounterType.selectedIndex].text != "All") {
           this.filters = true;
-        }else{
+        } else {
           this.filters = false;
         }
         this.RefreshRecords();
       }
 
-      ClearFilters(){
+      ClearFilters() {
         this.filters = false;
         this.$.filterInputFromDate.value = "";
         this.$.filterInputToDate.value = "";
@@ -1045,7 +1054,7 @@
         this.$.filterModal.style.display = "none";
       }
 
-      FilterEncounter(encounter){
+      FilterEncounter(encounter) {
         var decision = true;
         var fromDate = new Date(this.$.filterInputFromDate.value);
         var toDate = new Date(this.$.filterInputToDate.value);
@@ -1053,48 +1062,48 @@
         var type = this.$.filterInputEncounterType.options[this.$.filterInputEncounterType.selectedIndex].text.toLowerCase();
         var encounterType = encounter.encounterType.display.toLowerCase();
 
-        if(fromDate != "" || toDate != "" ){
-          if(encounterDate < fromDate || encounterDate > toDate){
+        if (fromDate != "" || toDate != "") {
+          if (encounterDate < fromDate || encounterDate > toDate) {
             decision = false;
           }
         }
 
-          if(type != encounterType){
-            decision = false;
-          }
+        if (type != encounterType) {
+          decision = false;
+        }
         return decision;
       }
 
-/////////CREATE NEW//////////////
+      /////////CREATE NEW//////////////
       OpenCreateModal() {
         this.$.createEncounterModal.style.display = "block";
-        this.encounterProvidersFormNumber=[];
+        this.encounterProvidersFormNumber = [];
       }
 
       CloseCreateModal() {
         this.$.createEncounterModal.style.display = "none";
       }
 
-      RemoveProvider_Create(e){
-        var currentProviders = this.GetRolesAndProvidersFromForm("#role","#provider");
+      RemoveProvider_Create(e) {
+        var currentProviders = this.GetRolesAndProvidersFromForm("#role", "#provider");
         var index = currentProviders.indexOf(currentProviders[e.target.value]);
-        currentProviders.splice(index, 1);//delete
+        currentProviders.splice(index, 1); //delete
         var tmp = this.encounterProvidersFormNumber;
-        tmp.splice(-1,1);
-        this.encounterProvidersFormNumber=[];
-        this.encounterProvidersFormNumber=tmp;
-        this.PutRolesAndProvidersToForm(currentProviders, "#role","#provider");
+        tmp.splice(-1, 1);
+        this.encounterProvidersFormNumber = [];
+        this.encounterProvidersFormNumber = tmp;
+        this.PutRolesAndProvidersToForm(currentProviders, "#role", "#provider");
       }
 
       CreateEncounterBtnClicked() {
-        if(this.encounterProvidersFormNumber.length !="")  {
+        if (this.encounterProvidersFormNumber.length != "") {
           this.CreateEncounterObj();
-          this.providerCallsToDo={
-            quantity : this.encounterProvidersFormNumber.length,
-            current : 0
+          this.providerCallsToDo = {
+            quantity: this.encounterProvidersFormNumber.length,
+            current: 0
           };
-          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers,  this.shadowRoot.querySelector("#provider"+this.providerCallsToDo.current).value);
-        }else{
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers, this.shadowRoot.querySelector("#provider" + this.providerCallsToDo.current).value);
+        } else {
           this.CreateEncounterObjWithoutProviders();
           this.$.iron_ajax_create.generateRequest();
         }
@@ -1104,9 +1113,9 @@
       handleResponseGetProvider(data) {
         this.newEncounterObj.encounterProviders[this.providerCallsToDo.current].provider = data.detail.response.results[0].uuid;
         this.providerCallsToDo.current++;
-        if(this.providerCallsToDo.current < this.providerCallsToDo.quantity){
-          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers, this.shadowRoot.querySelector("#provider"+this.providerCallsToDo.current).value);
-        }else{
+        if (this.providerCallsToDo.current < this.providerCallsToDo.quantity) {
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers, this.shadowRoot.querySelector("#provider" + this.providerCallsToDo.current).value);
+        } else {
           this.$.iron_ajax_create.generateRequest();
         }
       }
@@ -1117,17 +1126,17 @@
           "form": this.$.createEncDataForm.options[this.$.createEncDataForm.selectedIndex].value,
           "patient": this.encounters[0].patient.uuid,
           "location": this.$.createEncDataLocation.options[this.$.createEncDataLocation.selectedIndex].value,
-          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.createEncDataDate.value)).toISOString()),
+          "encounterDatetime": "" + (new Date(parseDateReturnDate(this.$.createEncDataDate.value)).toISOString()),
           "encounterType": this.$.createEncDataType.options[this.$.createEncDataType.selectedIndex].value
         };
       }
 
-      CreateEncounterObjWithoutProviders(){
+      CreateEncounterObjWithoutProviders() {
         this.newEncounterObj = {
           "form": this.$.createEncDataForm.options[this.$.createEncDataForm.selectedIndex].value,
           "patient": this.encounters[0].patient.uuid,
           "location": this.$.createEncDataLocation.options[this.$.createEncDataLocation.selectedIndex].value,
-          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.createEncDataDate.value)).toISOString()),
+          "encounterDatetime": "" + (new Date(parseDateReturnDate(this.$.createEncDataDate.value)).toISOString()),
           "encounterType": this.$.createEncDataType.options[this.$.createEncDataType.selectedIndex].value
         };
       }
@@ -1138,11 +1147,11 @@
         this.$.iron_ajax_get_all.generateRequest();
       }
 
-      IncreaseEncounterProvidersFormNumber(e){
+      IncreaseEncounterProvidersFormNumber(e) {
         var tmp = [];
 
-        for (var i = 0; i < this.encounterProvidersFormNumber.length+1; i++) {
-          tmp.push(""+i);
+        for (var i = 0; i < this.encounterProvidersFormNumber.length + 1; i++) {
+          tmp.push("" + i);
         }
 
         this.encounterProvidersFormNumber = tmp;
@@ -1150,7 +1159,7 @@
 
 
 
-/////////PAGINATION//////////////
+      /////////PAGINATION//////////////
       PushPage(encounters) {
         var maxIndx = (this.pageNmb + 1) * (this.numberRecordsPerPage - 1);
         if (this.pageNmb != 0) {
@@ -1162,15 +1171,16 @@
         //filter
         var filteredEncounters = [];
         for (var i = 0; i < encounters.length; i++) {
-            if(this.filters){
-              var toPush = this.FilterEncounter(encounters[i]);
-              if(toPush){
-                filteredEncounters.push(encounters[i]);
-              }
-            }else{
+          if (this.filters) {
+            var toPush = this.FilterEncounter(encounters[i]);
+            if (toPush) {
               filteredEncounters.push(encounters[i]);
             }
+          } else {
+            filteredEncounters.push(encounters[i]);
+          }
         }
+        this.encountersToDisplayTotalQuantity = filteredEncounters.length;
         var encountersToReturn = [];
 
         //putToShow
@@ -1182,15 +1192,15 @@
         return encountersToReturn;
       }
 
-      RefreshRecords(){
+      RefreshRecords() {
         this.encountersToDisplay = this.PushPage(this.encounters);
       }
 
-      RefreshAll(){
+      RefreshAll() {
         this._changedSearchQuery();
       }
 
-      ResetPageNmb(){
+      ResetPageNmb() {
         this.pageNmb = 0;
       }
 
@@ -1213,8 +1223,12 @@
         this.$.pageCount.innerHTML = pageNumber + "/" + (Math.floor(this.encounters.length / this.numberRecordsPerPage) + 1);
       }
 
+      displayIndex(index) {
+        return index + 1;
+      }
 
-/////////ERROR//////////////
+
+      /////////ERROR//////////////
       _error(event) {
         console.log("Event:");
         console.log(event);
@@ -1289,16 +1303,15 @@
 
     async function SetEditProviderValues(shadowRoot, encounterToEdit) {
       await sleep(10);
-      for(var x = 0 ; x < encounterToEdit.encounterProviders.length; x++){
-        shadowRoot.querySelector("#provider_edit"+x).value = encounterToEdit.encounterProviders[x].provider.display;
-        for (var i = 0; i < shadowRoot.querySelector("#role_edit"+x).options.length ; i++){
-          if(shadowRoot.querySelector("#role_edit"+x).options[i].text == encounterToEdit.encounterProviders[x].encounterRole.display){
-            shadowRoot.querySelector("#role_edit"+x).options[i].selected = true;
+      for (var x = 0; x < encounterToEdit.encounterProviders.length; x++) {
+        shadowRoot.querySelector("#provider_edit" + x).value = encounterToEdit.encounterProviders[x].provider.display;
+        for (var i = 0; i < shadowRoot.querySelector("#role_edit" + x).options.length; i++) {
+          if (shadowRoot.querySelector("#role_edit" + x).options[i].text == encounterToEdit.encounterProviders[x].encounterRole.display) {
+            shadowRoot.querySelector("#role_edit" + x).options[i].selected = true;
           }
         }
       }
     }
-
   </script>
 
 </dom-module>
