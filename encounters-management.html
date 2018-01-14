@@ -32,6 +32,13 @@
         margin-left: 5%;
       }
 
+      :host #headerPatientName {
+        font-size: var(--encounters-management-font-size-header-patient-name, 25pt);
+        color: var(--encounters-management-font-color-header-patient-name , rgb(62, 62, 62));
+        margin-left: 2%;
+        display: inline-block;
+      }
+
 
       /*INDEX*/
       :host .index {
@@ -112,12 +119,8 @@
         background: rgb(255, 255, 255);
       }
 
-      :host #sortBtn {
-        width: auto;
-        margin-left: 5%;
-      }
 
-      :host #filtersBtn{
+      :host #filtersBtn, #refreshBtn{
         width: auto;
         margin-left: 5%;
       }
@@ -144,6 +147,12 @@
       :host #pagination {
         float: right;
         width: 20%;
+      }
+
+      :host #recordsCount {
+        margin-left: 2%;
+        color: var(--encounters-management-font-color-records-count  , rgb(62, 62, 62));
+        font-size: 15pt;
       }
 
       :host .pageBtn {
@@ -268,13 +277,33 @@
           <span class="close-modal" on-click="CloseCreateModal">&times;</span>
           <h2>Create new encounter</h2>
           <hr></br>
-          Patient name: <input type="text" class="form-control input-lg" id="createEncDataName"></input></br>
-          Location: <input type="text" class="form-control input-lg" id="createEncDataLocation"></input></br>
+          <label for="createEncDataLocation">Location:</label>
+              <select class="form-control input-lg" id="createEncDataLocation">
+                <template is="dom-repeat" items="[[availableLocations]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br>
           Encounter Date: <input type="text" class="form-control input-lg" id="createEncDataDate"></input></br>
-          Encounter Type: <input type="text" class="form-control input-lg" id="createEncDataType"></input></br>
-          Form: <input type="text" class="form-control input-lg" id="createEncDataForm"></input></br>
-          Providers: <input type="text" class="form-control input-lg" id="createEncDataProviders"></input></br></br>
-          <button type='button' class="btn btn-default" id="createEncounerBtn" on-click="CreateEncounter">
+          <label for="createEncDataType">Encounter Type:</label>
+              <select class="form-control input-lg" id="createEncDataType">
+                <template is="dom-repeat" items="[[availableTypes]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br>
+          <label for="createEncDataForm">Form:</label>
+              <select class="form-control input-lg" id="createEncDataForm">
+                <template is="dom-repeat" items="[[availableForms]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br>
+          Providers: <input type="text" class="form-control input-lg" id="createEncDataProviders"></input>
+          <label for="createEncDataRole">Provider role:</label>
+              <select class="form-control input-lg" id="createEncDataRole">
+                <template is="dom-repeat" items="[[availableEncounterRoles]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br></br>
+          <button type='button' class="btn btn-default" id="createEncounerBtn" on-click="CreateEncounterBtnClicked">
             Create
           </button>
         </div>
@@ -287,13 +316,33 @@
           <span class="close-modal" on-click="CloseEditModal">&times;</span>
           <h2>Edit encounter</h2>
           <hr></br>
-          Patient name: <input type="text" class="form-control input-lg" id="editEncDataName"></input></br>
-          Location: <input type="text" class="form-control input-lg" id="editEncDataLocation"></input></br>
+          <label for="editEncDataLocation">Location:</label>
+              <select class="form-control input-lg" id="editEncDataLocation">
+                <template is="dom-repeat" items="[[availableLocations]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br>
           Encounter Date: <input type="text" class="form-control input-lg" id="editEncDataDate"></input></br>
-          Encounter Type: <input type="text" class="form-control input-lg" id="editEncDataType"></input></br>
-          Form: <input type="text" class="form-control input-lg" id="editEncDataForm"></input></br>
-          Providers: <input type="text" class="form-control input-lg" id="editEncDataProviders"></input></br></br>
-          <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="CreateEncounter">
+          <label for="editEncDataType">Encounter Type:</label>
+              <select class="form-control input-lg" id="editEncDataType">
+                <template is="dom-repeat" items="[[availableTypes]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br>
+          <label for="editEncDataForm">Form:</label>
+              <select class="form-control input-lg" id="editEncDataForm">
+                <template is="dom-repeat" items="[[availableForms]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br>
+          Providers: <input type="text" class="form-control input-lg" id="editEncDataProviders"></input>
+          <label for="editEncDataRole">Provider role:</label>
+              <select class="form-control input-lg" id="editEncDataRole">
+                <template is="dom-repeat" items="[[availableEncounterRoles]]">
+                  <option value="{{item.uuid}}">{{item.name}}</option>
+                </template>
+              </select></br></br>
+          <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="EditEncounterBtnClicked">
             Save changes
           </button>
         </div>
@@ -311,10 +360,15 @@
           To: <input type="text" class="form-control input-lg" id="filterInputToDate"></input>
           </br>
 
-          <h3>Encounter type:</h3> </br><input type="text" class="form-control input-lg" id="filterInputEncounterType"></input>
-          </br>
+          <h3>Encounter type:</h3></br>
+              <select class="form-control input-lg" id="filterInputEncounterType">
+                <option>All</option>
+                <template is="dom-repeat" items="[[availableTypes]]">
+                  <option>{{item.name}}</option>
+                </template>
+              </select></br>
 
-          <button type='button' class="btn btn-default" id="editEncounerBtn" on-click="Filter">
+          <button type='button' class="btn btn-default" id="FilterBtn" on-click="Filter">
             Filter
           </button>
         </div>
@@ -345,6 +399,10 @@
           </button>
         </template>
 
+        <button class="btn-default my-btn-default drp-btn" id="refreshBtn" on-click="RefreshAll">
+          <img src="./images/ic_refresh_black_48dp_2x.png" width="70px" height="70px">
+        </button>
+
       </div>
       <div id="actions">
         <button class="btn-default my-btn-default" on-click="OpenCreateModal">
@@ -353,6 +411,8 @@
         <button class="btn-default my-btn-default" on-click="Import">
             <img src="./images/ic_file_upload_black_48dp_2x.png" width="30px" height="30px"> Import
         </button>
+        <div id="headerPatientName">For {{encounters.0.patient.display}}
+        <template is="dom-if" if="{{notFound}}">not found</template></div>
       </div>
       <div id="pagination">
         <span id="pageCount">1/5</span>
@@ -362,6 +422,7 @@
         <button class="btn-default pageBtn my-btn-default" on-click="NextPage">
             <img src="./images/ic_chevron_right_black_48dp_2x.png" width="30px" height="30px">
         </button>
+        <span id="recordsCount">{{encounters.length}} records</span>
       </div>
       <table class="table table-striped white-table">
         <thead id="tableHeaders">
@@ -395,7 +456,7 @@
                 <button class="btn btn-default" on-click="OpenEditModal" value="{{item.uuid}}">
                   <img src="./images/ic_edit_black_48dp_2x.png" width="20px" height="20px">
                 </button>
-                <button class="btn btn-danger" on-click="OpenEditModal" value="{{item.uuid}}">
+                <button class="btn btn-danger" on-click="DeleteItem" value="{{item.uuid}}">
                   <img src="./images/ic_delete_forever_white_48dp_2x.png" width="20px" height="20px">
                 </button>
               </td>
@@ -428,7 +489,7 @@
   </table>
   </div>
 
-
+<!-- BASE ACTIONS-->
   <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
   params='{{searchQueryObj}}'
   content-type="application/json"
@@ -439,19 +500,93 @@
   on-error="_error"
   id="iron_ajax_get_all"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
-  params='{{newEncounterObj}}'
+    <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter"
+    body='{{newEncounterObj}}'
+    content-type="application/json"
+     handle-as="json"
+     with-credentials="true"
+     on-response="handleResponseCreateNew"
+     method="POST"
+     on-error="_error"
+     id="iron_ajax_create"></iron-ajax>
+
+    <iron-ajax url="{{deleteEditURL}}"
+    with-credentials="true"
+    content-type="application/json"
+    method="DELETE"
+    on-error="_error"
+    id="iron_ajax_delete"></iron-ajax>
+
+    <iron-ajax url="{{deleteEditURL}}"
+    body='{{editEncounterObj}}'
+    content-type="application/json"
+    handle-as="json"
+    with-credentials="true"
+    on-response="handleResponseEdit"
+    method="POST"
+    on-error="_error"
+    id="iron_ajax_edit"></iron-ajax>
+
+<!-- TO CREATE AND EDIT -->
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
+  params=''
   content-type="application/json"
-   handle-as="json"
-   with-credentials="true"
-   on-response="handleResponseCreateNew"
-   method="POST"
-   on-error="_error"
-   id="iron_ajax_create"></iron-ajax>
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetProvider"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_providers"></iron-ajax>
 
-  <iron-ajax url="{{deleteEditURL}}" with-credentials="true" content-type="application/json" method="DELETE" on-error="_error" id="iron_ajax_delete"></iron-ajax>
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/provider"
+  params=''
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetProviderEdit"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_providers_edit"></iron-ajax>
 
-  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounter" params='{{sqObj}}' content-type="application/json" handle-as="json" with-credentials="true" on-response="handleResponse" method="GET" on-error="_error" id="iron_ajax_edit"></iron-ajax>
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encountertype"
+  params=''
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetEncounterType"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_type"></iron-ajax>
+
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/location"
+  params=''
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetLocation"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_location"></iron-ajax>
+
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/form"
+  params=''
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetForm"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_form"></iron-ajax>
+
+  <iron-ajax url="http://localhost:8080/lh-toolkit/ws/rest/v1/encounterrole"
+  params=''
+  content-type="application/json"
+  handle-as="json"
+  with-credentials="true"
+  on-response="handleResponseGetEncounterRole"
+  method="GET"
+  on-error="_error"
+  id="iron_ajax_get_encounterRole"></iron-ajax>
 
   </template>
 
@@ -462,10 +597,6 @@
       }
       static get properties() {
         return {
-          encountersRaw: {
-            type: Array,
-            notice: true
-          },
           encounters: {
             type: Array,
             notice: true
@@ -483,7 +614,12 @@
             type: Object
           },
           newEncounterObj: {
-            type: Object
+            type: Object,
+            notice: true
+          },
+          editEncounterObj: {
+            type: Object,
+            notice: true
           },
           notFound: {
             type: Boolean
@@ -502,6 +638,18 @@
           },
           filters: {
             type: Boolean
+          },
+          availableLocations: {
+            type: Array
+          },
+          availableTypes: {
+            type: Array
+          },
+          availableForms: {
+            type: Array
+          },
+          availableEncounterRoles: {
+            type: Array
           }
         }
       }
@@ -519,28 +667,30 @@
           this.changesq.click();
         });
 
-        //DROPDOWN
+        //MODAL HIDE IF CLICKED ON OTHER AREA THA MODAL
         this.$.content.addEventListener('click', function(evt) {
-          if (!evt.target.matches('.drp-btn')) {
-            var dropdowns = this.querySelectorAll('.dropdown-content');
-            for (var i = 0; i < dropdowns.length; i++) {
-              if (dropdowns[i].classList.contains('show')) {
-                dropdowns[i].classList.remove('show');
-              }
+          if (!evt.target.matches('.btn-default') && !evt.target.matches('.modal-content') && !evt.target.matches('.form-control')
+                && !evt.target.parentNode.matches('.modal-content') && !evt.target.parentNode.parentNode.matches('.modal-content')) {
+            var modals = this.querySelectorAll('.modal');
+            for (var i = 0; i < modals.length; i++) {
+              modals[i].style.display = "none";
             }
           }
         });
 
+        ///////SEARCH FOR EDIT, CREATE, FILTER, ... (FOR <SELECT> TAGS)
+        this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_location);
+        this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_type);
+        this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_form);
+        this.GetAllAvailable_GenerateRequestAjax(this.$.iron_ajax_get_encounterRole);
       }
 
 /////////DELETE//////////////
       DeleteItem(e) {
-        console.log(e.target.value);
+        console.log(e.target);
         this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
-        console.log(this.deleteEditURL);
-        console.log(this.$.iron_ajax_delete.url);
         this.$.iron_ajax_delete.generateRequest();
-        this._changedSearchQuery();
+        this.RefreshAll();
       }
 
 /////////IMPORT//////////////
@@ -567,7 +717,6 @@
       handleResponseGetAll(data) {
         this.pageNmb = 0;
         var encounters = data.detail.response.results;
-        this.encountersRaw = data.detail.response.results;
 
         if (encounters.length == 0) {
 
@@ -595,23 +744,69 @@
         this.UpdatePagination();
       }
 
+      /////SEARCH FOR <SELECT> TAGS
+          ///Location
+          handleResponseGetLocation(data) {
+            this.availableLocations = data.detail.response.results;
+          }
+
+          ///Type
+          handleResponseGetEncounterType(data) {
+            this.availableTypes = data.detail.response.results;
+          }
+
+          ///Form
+          handleResponseGetForm(data) {
+            this.availableForms = data.detail.response.results;
+          }
+
+          ///Role
+          handleResponseGetEncounterRole(data) {
+            this.availableEncounterRoles = data.detail.response.results;
+          }
+
+
+          GetAllAvailable_GenerateRequestAjax(ironAjax) {
+              ironAjax.params = {
+                v: "full"
+              };
+            ironAjax.generateRequest();
+          }
+
+
+          PutSQ_GenerateRequestAjax(ironAjax, sq) {
+              ironAjax.params = {
+                q: sq,
+                v: "full"
+              };
+            ironAjax.generateRequest();
+          }
 
 /////////EDIT//////////////
       OpenEditModal(e) {
         this.$.editEncounterModal.style.display = "block";
+        this.deleteEditURL = "http://localhost:8080/lh-toolkit/ws/rest/v1/encounter/" + e.target.value;
 
         //Set values to edit
         var encounterToEdit = this.GetMatchingEncounter(e.target.value);
         this.$.editEncDataDate.value = encounterToEdit.encounterDatetime;
-        this.$.editEncDataName.value = encounterToEdit.patient.display;
-        this.$.editEncDataForm.value = encounterToEdit.form.display;
-        this.$.editEncDataType.value = encounterToEdit.encounterType.display;
-        this.$.editEncDataLocation.value = encounterToEdit.location.display;
+        this.SetSelectedInSelect(encounterToEdit.form.name, this.$.editEncDataForm);
+        this.SetSelectedInSelect(encounterToEdit.encounterType.name,this.$.editEncDataType);
+        this.SetSelectedInSelect(encounterToEdit.location.name,this.$.editEncDataLocation);
         this.$.editEncDataProviders.value = encounterToEdit.encounterProviders[0].provider.display;
       }
 
+
       CloseEditModal() {
-        this.$.editEncounterModal.style.display = "none";
+          this.$.editEncounterModal.style.display = "none";
+      }
+
+      SetSelectedInSelect(value, element){
+        for (var i = 0; i < element.options.length ; i++){
+          if(element.options[i].text == value){
+            element.options[i].selected = true;
+          }
+        }
       }
 
       GetMatchingEncounter(encounteruuid) {
@@ -620,6 +815,30 @@
             return this.encountersToDisplay[i];
           }
         }
+      }
+
+      EditEncounterBtnClicked(){
+        this.editEncounterObj = {
+          "encounterProviders": [{"provider":"", "encounterRole":this.$.editEncDataRole.options[this.$.editEncDataRole.selectedIndex].value}],
+          "form": this.$.editEncDataForm.options[this.$.editEncDataForm.selectedIndex].value,
+          "patient": this.encounters[0].patient.uuid,
+          "location": this.$.editEncDataLocation.options[this.$.editEncDataLocation.selectedIndex].value,
+          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.editEncDataDate.value)).toISOString()),
+          "encounterType": this.$.editEncDataType.options[this.$.editEncDataType.selectedIndex].value
+        };
+        this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers_edit, this.$.editEncDataProviders.value);
+      }
+
+      handleResponseGetProviderEdit(data){
+        this.editEncounterObj.encounterProviders[0].provider = data.detail.response.results[0].uuid;
+        this.$.iron_ajax_edit.generateRequest();
+      }
+
+      handleResponseEdit(data){
+        console.log("EDITED");
+        console.log(data.detail.response);
+        this.RefreshAll();
+        this.CloseEditModal();
       }
 
 
@@ -694,8 +913,7 @@
       Filter() {
         this.CloseFilterModal();
         if(this.$.filterInputFromDate.value != "" || this.$.filterInputToDate.value != ""
-              || this.$.filterInputEncounterType.value != ""){
-
+            || this.$.filterInputEncounterType.options[this.$.filterInputEncounterType.selectedIndex].text != "All"){
           this.filters = true;
         }else{
           this.filters = false;
@@ -707,8 +925,9 @@
         this.filters = false;
         this.$.filterInputFromDate.value = "";
         this.$.filterInputToDate.value = "";
-        this.$.filterInputEncounterType.value = "";
+        this.$.filterInputEncounterType.selectedIndex = 0;
         this.RefreshRecords();
+        this.ResetPageNmb();
       }
 
 
@@ -725,7 +944,7 @@
         var fromDate = new Date(this.$.filterInputFromDate.value);
         var toDate = new Date(this.$.filterInputToDate.value);
         var encounterDate = new Date(encounter.encounterDatetime);
-        var type = this.$.filterInputEncounterType.value.toLowerCase();
+        var type = this.$.filterInputEncounterType.options[this.$.filterInputEncounterType.selectedIndex].text.toLowerCase();
         var encounterType = encounter.encounterType.display.toLowerCase();
 
         if(fromDate != "" || toDate != "" ){
@@ -734,11 +953,9 @@
           }
         }
 
-        if(type != ""){
           if(type != encounterType){
             decision = false;
           }
-        }
         return decision;
       }
 
@@ -746,26 +963,52 @@
       OpenCreateModal() {
         this.$.createEncounterModal.style.display = "block";
       }
+
       CloseCreateModal() {
         this.$.createEncounterModal.style.display = "none";
       }
-      CreateEncounter() {
-        this.newEncounterObj = {
-          "resource": {
-            "form": "bab74758-c679-11e6-b56b-f81654da705a",
-            "patient": "1144f49d-f6c9-44b1-bd53-9574a2894883",
-            "location": "8d6c993e-c2cc-11de-8d13-0010c6dffd0f",
-            "encounterDatetime": "2018-01-13T17:28:54+00:00",
-            "encounterType": "8d5b27bc-c2cc-11de-8d13-0010c6dffd0f"
-          }
-        };
-        console.log(this.encounters);
-        console.log("Generate req");
+
+      CreateEncounterBtnClicked() {
+        if(this.$.createEncDataProviders.value !="")  {
+          this.CreateEncounterObj();
+          this.PutSQ_GenerateRequestAjax(this.$.iron_ajax_get_providers, this.$.createEncDataProviders.value);
+        }else{
+          this.CreateEncounterObjWithoutProviders();
+          this.$.iron_ajax_create.generateRequest();
+        }
+        this.CloseCreateModal();
+      }
+
+      handleResponseGetProvider(data) {
+        this.newEncounterObj.encounterProviders[0].provider = data.detail.response.results[0].uuid;
         this.$.iron_ajax_create.generateRequest();
       }
 
+      CreateEncounterObj() {
+        this.newEncounterObj = {
+          "encounterProviders": [{"provider":"", "encounterRole":this.$.createEncDataRole.options[this.$.createEncDataRole.selectedIndex].value}],
+          "form": this.$.createEncDataForm.options[this.$.createEncDataForm.selectedIndex].value,
+          "patient": this.encounters[0].patient.uuid,
+          "location": this.$.createEncDataLocation.options[this.$.createEncDataLocation.selectedIndex].value,
+          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.createEncDataDate.value)).toISOString()),
+          "encounterType": this.$.createEncDataType.options[this.$.createEncDataType.selectedIndex].value
+        };
+      }
+
+      CreateEncounterObjWithoutProviders(){
+        this.newEncounterObj = {
+          "form": this.$.createEncDataForm.options[this.$.createEncDataForm.selectedIndex].value,
+          "patient": this.encounters[0].patient.uuid,
+          "location": this.$.createEncDataLocation.options[this.$.createEncDataLocation.selectedIndex].value,
+          "encounterDatetime": ""+(new Date(parseDateReturnDate(this.$.createEncDataDate.value)).toISOString()),
+          "encounterType": this.$.createEncDataType.options[this.$.createEncDataType.selectedIndex].value
+        };
+      }
+
       handleResponseCreateNew(data) {
+        console.log("NEW");
         console.log(data.detail.response);
+        this.$.iron_ajax_get_all.generateRequest();
       }
 
 
@@ -778,21 +1021,25 @@
           var minIndx = 0;
         }
 
-        var encountersToReturn = [];
-
-        for (var i = minIndx; i < (maxIndx + 1); i++) {
-          if (encounters[i]) {
+        //filter
+        var filteredEncounters = [];
+        for (var i = 0; i < encounters.length; i++) {
             if(this.filters){
-              console.log("PushPageIfFilters");
               var toPush = this.FilterEncounter(encounters[i]);
-              console.log(encounters[i]);
-              console.log(toPush);
               if(toPush){
-                encountersToReturn.push(encounters[i]);
+                filteredEncounters.push(encounters[i]);
               }
             }else{
-              encountersToReturn.push(encounters[i]);
+              filteredEncounters.push(encounters[i]);
             }
+        }
+        console.log(filteredEncounters);
+        var encountersToReturn = [];
+
+        //putToShow
+        for (var i = minIndx; i < (maxIndx + 1); i++) {
+          if (filteredEncounters[i]) {
+            encountersToReturn.push(filteredEncounters[i]);
           }
         }
         return encountersToReturn;
@@ -800,6 +1047,14 @@
 
       RefreshRecords(){
         this.encountersToDisplay = this.PushPage(this.encounters);
+      }
+
+      RefreshAll(){
+        this._changedSearchQuery();
+      }
+
+      ResetPageNmb(){
+        this.pageNmb = 0;
       }
 
       PreviousPage() {
@@ -862,7 +1117,7 @@
       myDateString = ('0' + date.getDate()).slice(-2) + '/' +
         ('0' + (date.getMonth() + 1)).slice(-2) + '/' +
         date.getFullYear() + '  ' +
-        ('0' + (date.getHours() - 1)).slice(-2) + ':' +
+        ('0' + date.getHours()).slice(-2) + ':' +
         ('0' + date.getMinutes()).slice(-2);
 
       return myDateString;
