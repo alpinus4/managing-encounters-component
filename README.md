@@ -87,7 +87,7 @@ git clone https://github.com/alpinus4/managing-encounters-component
 }
 ```
 
-3. Properties usage:
+3. Tag properties usage:
   * `rest-url` - `String` you have to set it to your url to lh-toolkit rest api endpoint
   * `encounters` - `Array` all encounters downloaded from lh-toolkit, contains `Objects`
   * `encounters-to-display` - `Array` encounters currently displayed, contains `Objects`
