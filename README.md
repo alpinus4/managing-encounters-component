@@ -4,20 +4,25 @@ Designed by me.
 
 Tested on Firefox 57.0.4 and Chrome 63.0.3239.132.
 
-## How to install?
+## How to run?
 1. #### Clone it via Git:
 ```
 git clone https://github.com/alpinus4/managing-encounters-component
 ```
 2. #### Run `polymer serve --open` command (you must have installed polymer) in project location
 
+3. #### You successfully ran my _Managing encounters component_
+
+![](images/for-readme/managing-encounters-1.png?raw=true "Screenshot1")
+
+![](images/for-readme/managing-encounters-2.png?raw=true "Screenshot2")
 
 ## How to use?
 
 1. Basic usage:
 ```html
 <link rel="import" href="encounters-management.html"> <!-- In head-->
-<encounters-management id="encounters_management_component_id" 
+<encounters-management id="encounters_management_component_id"
                        rest-url="http://localhost:8080/lh-toolkit/ws/rest/v1"/> <!-- In body-->
 ```
 2. Custom CSS properties. Values inserted show default values.
