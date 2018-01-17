@@ -98,7 +98,7 @@ git clone https://github.com/alpinus4/managing-encounters-component
   * `encounters` - `Array` all encounters downloaded from lh-toolkit, contains `Objects`
   * `encounters-to-display` - `Array` encounters currently displayed, contains `Objects`
   * `encounters-to-display-total-quantity` - `Number` total (from all pages) number of encounters to display
-  * `search-query` - `String` search query at the beginning
+  * `search-query` - `String` search query at the beginning, not working in Chrome
   * `not-found` - `Boolean` true value if not found
   * `loading` - `Boolean` true value if loading
   * `page-nmb` - `Number` currently displayed page index
