@@ -9,9 +9,7 @@ Tested on Firefox 57.0.4 and Chrome 63.0.3239.132.
 ```
 git clone https://github.com/alpinus4/managing-encounters-component
 ```
-2. #### Download zip file:
-
-
+2. #### Run `polymer serve --open` command (you must have installed polymer) in project location
 
 
 ## How to use?
@@ -19,9 +17,10 @@ git clone https://github.com/alpinus4/managing-encounters-component
 1. Basic usage:
 ```html
 <link rel="import" href="encounters-management.html"> <!-- In head-->
-<encounters-management id="encounters_management_component_id" rest-url="http://localhost:8080/lh-toolkit/ws/rest/v1"/> <!-- In body-->
+<encounters-management id="encounters_management_component_id" 
+                       rest-url="http://localhost:8080/lh-toolkit/ws/rest/v1"/> <!-- In body-->
 ```
-2. Custom CSS properties:
+2. Custom CSS properties. Values inserted show default values.
 ```css
 #encounters_management_component_id {
 
@@ -89,7 +88,7 @@ git clone https://github.com/alpinus4/managing-encounters-component
 }
 ```
 
-3. Properties usage:
+3. Tag properties usage:
   * `rest-url` - `String` you have to set it to your url to lh-toolkit rest api endpoint
   * `encounters` - `Array` all encounters downloaded from lh-toolkit, contains `Objects`
   * `encounters-to-display` - `Array` encounters currently displayed, contains `Objects`
