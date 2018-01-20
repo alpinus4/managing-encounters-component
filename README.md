@@ -1,6 +1,7 @@
 # Component for managing encounters
 Connected with this: https://gitlab.com/librehealth/gci/issues/80 GCI task.
 Designed by me.
+I used icons from: https://material.io/icons/ and one icon from: https://www.iconfinder.com/icons/905641/ascending_az_filters_sort_sorting_icon#size=512
 
 Tested on Firefox 57.0.4 and Chrome 63.0.3239.132.
 
